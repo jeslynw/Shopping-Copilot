@@ -60,8 +60,9 @@ python3 tools/run_eval.py --profile                   # team agent + latency / m
 
 LLM layer (optional, on when a key is present): put `OPENAI_API_KEY=…` (or `ANTHROPIC_API_KEY=…`) in a git-ignored `.env`
 at the repo root — or export it — and run the same command; the agent
-adds grounded constraint extraction when a customer message doesn't match the simulator's templates, and rewrites the
-customer-facing message; `ask_attribute` and `recommendations` are unaffected by design. `COPILOT_LLM=0` or
+rewrites the customer-facing message with the model (`ask_attribute` and `recommendations` are unaffected by design —
+verified turn-for-turn against the offline run). A grounded LLM constraint-extraction fallback exists as an ablation flag
+(`--config llm_extract=true` in `tools/run_eval.py`); it measured no gain over the deterministic extractor on the paraphrase fixture. `COPILOT_LLM=0` or
 `COPILOT_OFFLINE=1` switches it off; token usage appears in `reported_token_usage`. Paraphrase robustness:
 `python3 tools/gen_paraphrases.py` once (Batches API) then `python3 tools/paraphrase_eval.py`.
 

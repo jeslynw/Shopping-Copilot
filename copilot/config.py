@@ -32,7 +32,8 @@ class Config:
     exclusion: str = "prev_turn"       # none | prev_turn | turn5 | naive
     # LLM layer (Claude API). Master switch `llm` comes from the environment (see from_env); each use is its own flag.
     llm: bool = False
-    llm_extract: bool = True           # grounded extraction fallback — only when no simulator template matched (paraphrase)
+    llm_extract: bool = False          # grounded extraction fallback when no template matched — MEASURED 0.918 vs deterministic 0.924 on the
+                                       # paraphrase fixture (29 Aug): no gain, +1 s/turn → ablation flag, off (docs/results/paraphrase_*.json)
     llm_polish: bool = True            # rewrite the customer-facing `message` only
     llm_rerank: bool = False           # ABLATION: LLM orders the top tier; measured, never on by default
     llm_budget_s: float = 4.0          # per-turn wall-clock budget for ALL LLM calls
