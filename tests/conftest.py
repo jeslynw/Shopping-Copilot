@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -6,6 +7,9 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+# Unit tests run the deterministic agent even when a real key is in .env; LLM tests inject fake clients explicitly.
+os.environ["COPILOT_LLM"] = "0"
 
 CATALOG = ROOT / "data" / "catalog.jsonl"
 PUBLIC = ROOT / "data" / "public_set.jsonl"

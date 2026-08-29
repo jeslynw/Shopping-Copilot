@@ -1,0 +1,114 @@
+[
+ {
+  "sample_count": 200,
+  "hit_rate_at_10": 1.0,
+  "mrr": 0.936972,
+  "mttc": 2.155,
+  "efficiency": 0.8845,
+  "recommended_technical_score": 0.957992,
+  "reported_token_usage": {
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "scenario_metrics": {
+   "boundary": {
+    "sample_count": 10,
+    "hit_rate_at_10": 1.0,
+    "mrr": 0.781111,
+    "mttc": 2.3
+   },
+   "browsing": {
+    "sample_count": 80,
+    "hit_rate_at_10": 1.0,
+    "mrr": 0.946875,
+    "mttc": 1.975
+   },
+   "buying": {
+    "sample_count": 80,
+    "hit_rate_at_10": 1.0,
+    "mrr": 0.933333,
+    "mttc": 1.575
+   },
+   "intent_override": {
+    "sample_count": 30,
+    "hit_rate_at_10": 1.0,
+    "mrr": 0.972222,
+    "mttc": 4.133333
+   }
+  },
+  "label": "clean (official strings)",
+  "llm": {
+   "enabled": false,
+   "provider": "openai",
+   "extract_model": "gpt-4.1-mini",
+   "polish_model": "gpt-4.1-mini",
+   "calls": 0,
+   "failures": 0,
+   "budget_skips": 0,
+   "p50_ms": 0,
+   "p95_ms": 0,
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "breaker_open": false
+  },
+  "violations": 0,
+  "exceptions": 0
+ },
+ {
+  "sample_count": 200,
+  "hit_rate_at_10": 0.975,
+  "mrr": 0.782484,
+  "mttc": 2.165,
+  "efficiency": 0.8835,
+  "recommended_technical_score": 0.898945,
+  "reported_token_usage": {
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "scenario_metrics": {
+   "boundary": {
+    "sample_count": 10,
+    "hit_rate_at_10": 0.9,
+    "mrr": 0.753333,
+    "mttc": 3.2
+   },
+   "browsing": {
+    "sample_count": 80,
+    "hit_rate_at_10": 0.9875,
+    "mrr": 0.714931,
+    "mttc": 1.75
+   },
+   "buying": {
+    "sample_count": 80,
+    "hit_rate_at_10": 0.9625,
+    "mrr": 0.806488,
+    "mttc": 1.725
+   },
+   "intent_override": {
+    "sample_count": 30,
+    "hit_rate_at_10": 1.0,
+    "mrr": 0.908333,
+    "mttc": 4.1
+   }
+  },
+  "label": "paraphrased \u2014 fixture (casual, chatty, formal, terse) (dev harness)",
+  "llm": {
+   "enabled": false,
+   "provider": "openai",
+   "extract_model": "gpt-4.1-mini",
+   "polish_model": "gpt-4.1-mini",
+   "calls": 0,
+   "failures": 0,
+   "budget_skips": 0,
+   "p50_ms": 0,
+   "p95_ms": 0,
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "breaker_open": false
+  },
+  "violations": 0,
+  "exceptions": 0
+ }
+]

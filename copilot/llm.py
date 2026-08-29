@@ -19,7 +19,7 @@ from collections import deque
 from typing import Optional
 
 from .config import Config, llm_provider_from_env
-from .extract import ATTR_WORD, Parsed, STOP, TOKEN_RE, norm
+from .extract import ATTR_WORD, BOILERPLATE, Parsed, STOP, TOKEN_RE, norm
 
 URL_RE = re.compile(r"https?://\S+|www\.\S+", re.I)
 KINDS = {"open_buying", "open_browsing", "open_override", "yield", "exhausted", "boundary", "override", "noinfo", "unknown"}
@@ -186,14 +186,20 @@ class LLM:
         if not isinstance(out, dict):
             return None
         msg_norm = norm(message)
+        cand_norm = {norm(p) for p in category_candidates}
         cons: list[tuple[str, str]] = []
         for c in out.get("constraints") or []:
             if not isinstance(c, str):
                 continue
             c = " ".join(c.split()).strip(" ,.;:-—–\"'")
+            stripped = " ".join(BOILERPLATE.sub(" ", c).split()).strip(" ,.;:-—–\"'")   # drop lead-ins the model kept
+            if stripped and norm(stripped) in msg_norm:
+                c = stripped
             toks = TOKEN_RE.findall(c.lower())
             if len(c) < 3 or not toks or all(t in STOP for t in toks) or norm(c) not in msg_norm:
                 continue                                   # not grounded → dropped
+            if norm(c) in cand_norm:
+                continue                                   # the category is not a constraint
             if c not in [x for x, _ in cons]:
                 cons.append((c, "llm"))
         cat = out.get("category")
@@ -202,6 +208,8 @@ class LLM:
             hit = [p for p in category_candidates if norm(p) == norm(cat)]
             cats = (hit[0],) if hit else ()
         kind = out.get("kind") if out.get("kind") in KINDS else "unknown"
+        if kind == "unknown" and cons and turn > 1:
+            kind = "yield"                                 # constraints arrived → the asked attribute was answered
         attr = out.get("attribute")
         if not (isinstance(attr, str) and attr in ATTRIBUTES):
             m = ATTR_WORD.search(message)
@@ -218,8 +226,8 @@ class LLM:
         text = URL_RE.sub("", text)
         for store in facts.get("stores", ()):
             if isinstance(store, str) and len(store) > 2:
-                text = re.sub(re.escape(store), "the seller", text, flags=re.I)
-        text = " ".join(text.split())[:600]
+                text = re.sub(r"\b(?:the\s+)?" + re.escape(store) + r"\b", "", text, flags=re.I)
+        text = re.sub(r"\s+([,.;:!?])", r"\1", " ".join(text.split()))[:600]
         return text if re.search(r"[A-Za-z]", text) else None
 
     def rerank(self, items: list[dict], constraints: list[str], category: Optional[str]) -> Optional[list[str]]:

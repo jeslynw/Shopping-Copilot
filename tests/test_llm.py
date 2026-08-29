@@ -34,7 +34,7 @@ CFG = Config(llm=True)
 def test_extract_keeps_only_grounded_spans_and_offered_categories():
     fake = FakeClient([{"category": "Jewelry Necklaces", "constraints": ["Material:alloy", "HALLUCINATED sparkle", "hi"],
                         "kind": "open_buying", "attribute": None}])
-    llm = LLM(CFG, client=fake)
+    llm = LLM(CFG, client=fake, provider="anthropic")
     llm.begin_turn()
     p = llm.extract("Hi! I need jewelry necklaces. It must have: Material:alloy.", 1, ["Jewelry Necklaces", "Jewelry"])
     assert p.constraints == [("Material:alloy", "llm")] and p.categories == ("Jewelry Necklaces",) and p.cat_prov == "llm"
@@ -42,8 +42,20 @@ def test_extract_keeps_only_grounded_spans_and_offered_categories():
     assert llm.turn_usage == (120, 30) and fake.calls[0]["output_config"]["format"]["type"] == "json_schema"
 
 
+def test_extract_strips_leadins_and_category_echo_and_marks_yield():
+    fake = FakeClient([{"category": "Accessories Belts", "constraints": ["Non-negotiable: 100% Leather", "Accessories Belts"],
+                        "kind": "open_buying", "attribute": None},
+                       {"category": None, "constraints": ["Mostly Imported", "Buckle closure"], "kind": "unknown", "attribute": None}])
+    llm = LLM(CFG, client=fake, provider="anthropic")
+    llm.begin_turn()
+    p = llm.extract("Can you help me find Accessories Belts? Non-negotiable: 100% Leather.", 1, ["Accessories Belts"])
+    assert p.constraints == [("100% Leather", "llm")] and p.categories == ("Accessories Belts",)
+    q = llm.extract("Mostly Imported; Buckle closure.", 2, [])
+    assert [c for c, _ in q.constraints] == ["Imported", "Buckle closure"] and q.kind == "yield"
+
+
 def test_extract_rejects_category_outside_candidates():
-    llm = LLM(CFG, client=FakeClient([{"category": "Women Dresses", "constraints": [], "kind": "open_browsing", "attribute": None}]))
+    llm = LLM(CFG, provider="anthropic", client=FakeClient([{"category": "Women Dresses", "constraints": [], "kind": "open_browsing", "attribute": None}]))
     llm.begin_turn()
     p = llm.extract("Show me some basketball men — still deciding.", 1, ["Basketball Men"])
     assert p.categories == () and p.cat_prov == "none" and p.constraints == []
@@ -51,7 +63,7 @@ def test_extract_rejects_category_outside_candidates():
 
 def test_failures_return_none_and_open_breaker():
     fake = FakeClient(raise_=True)
-    llm = LLM(CFG, client=fake)
+    llm = LLM(CFG, client=fake, provider="anthropic")
     llm.begin_turn()
     for _ in range(3):
         assert llm.extract("anything", 2, []) is None
@@ -61,20 +73,21 @@ def test_failures_return_none_and_open_breaker():
 
 
 def test_polish_strips_urls_and_store_names():
-    llm = LLM(CFG, client=FakeClient(["Great pick from Hanes — see https://example.com for more! Any colour preference?"]))
+    llm = LLM(CFG, provider="anthropic", client=FakeClient(["Great pick: the Hanes Women's Bra — see https://example.com for more! Any colour preference?"]))
     llm.begin_turn()
     out = llm.polish("draft", {"stores": ["Hanes"]})
-    assert "http" not in out and "Hanes" not in out and "the seller" in out
+    assert "http" not in out and "Hanes" not in out and "the the" not in out and "Women's Bra" in out
 
 
 def test_rerank_is_grounded_to_offered_ids():
-    llm = LLM(replace(CFG, llm_rerank=True), client=FakeClient([{"order": ["B", "ZZZ", "B", "A"]}]))
+    llm = LLM(replace(CFG, llm_rerank=True), provider="anthropic", client=FakeClient([{"order": ["B", "ZZZ", "B", "A"]}]))
     llm.begin_turn()
     items = [{"asin": a, "title": a, "matches": []} for a in ("A", "B", "C")]
     assert llm.rerank(items, ["x"], "Cat") == ["B", "A", "C"]
 
 
-def test_agent_invariance_with_polish_on(agent):
+def test_agent_invariance_with_polish_on(agent, monkeypatch):
+    monkeypatch.setenv("COPILOT_LLM_PROVIDER", "anthropic")
     from copilot.agent import Agent
     fake = FakeClient(["POLISHED"] * 20)
     on = Agent(CATALOG, replace(agent.cfg, llm=True), llm_client=fake)
@@ -91,7 +104,8 @@ def test_agent_invariance_with_polish_on(agent):
     assert len(fake.calls) == 3            # templates matched every message → no extraction calls, one polish per turn
 
 
-def test_agent_uses_llm_extraction_only_when_templates_fail(agent):
+def test_agent_uses_llm_extraction_only_when_templates_fail(agent, monkeypatch):
+    monkeypatch.setenv("COPILOT_LLM_PROVIDER", "anthropic")
     from copilot.agent import Agent
     fake = FakeClient([{"category": "Basketball Men", "constraints": ["Drawstring closure"], "kind": "open_buying", "attribute": None},
                        "POLISHED"])
@@ -105,7 +119,8 @@ def test_agent_uses_llm_extraction_only_when_templates_fail(agent):
     assert len(fake.calls) == 2
 
 
-def test_agent_with_failing_llm_matches_offline(agent):
+def test_agent_with_failing_llm_matches_offline(agent, monkeypatch):
+    monkeypatch.setenv("COPILOT_LLM_PROVIDER", "anthropic")
     from copilot.agent import Agent
     bad = Agent(CATALOG, replace(agent.cfg, llm=True), llm_client=FakeClient(raise_=True))
     for a in (agent, bad):
