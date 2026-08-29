@@ -58,6 +58,12 @@ AGENT=baseline python3 -m evaluator.local_evaluator   # kit baseline → Technic
 python3 tools/run_eval.py --profile                   # team agent + latency / memory / contract checks
 ```
 
+Claude layer (optional, on when a key is present): `export ANTHROPIC_API_KEY=…` and run the same command — the agent
+adds grounded constraint extraction when a customer message doesn't match the simulator's templates, and rewrites the
+customer-facing message; `ask_attribute` and `recommendations` are unaffected by design. `COPILOT_LLM=0` or
+`COPILOT_OFFLINE=1` switches it off; token usage appears in `reported_token_usage`. Paraphrase robustness:
+`python3 tools/gen_paraphrases.py` once (Batches API) then `python3 tools/paraphrase_eval.py`.
+
 Layout: `agent.py` (submission entry file, re-exports the same `Agent`) · `copilot/` (implementation) ·
 `tools/` (evaluation, contract validation, data download) · `tests/` (kit unittest + ours) ·
 `analysis/experiments/` (measured ablation ladder) · `docs/PLAN.md` (build plan) · `docs/results/` (committed scores).

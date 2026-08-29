@@ -92,6 +92,33 @@ class CategoryMatcher:
             return ()
         return tuple(self.by_multiset[tuple(sorted(stem(t) for t in best_seq))])
 
+    def candidates(self, text: str, k: int = 8) -> list[str]:
+        """Plausible vocab phrases for an opener: every exact token-subsequence hit plus the top fuzzy matches (for the LLM to choose from)."""
+        toks = tuple(TOKEN_RE.findall(text.lower()))
+        out: list[str] = []
+        for n in sorted(self.seqs_by_len, reverse=True):
+            if n > len(toks):
+                continue
+            windows = {toks[i:i + n] for i in range(len(toks) - n + 1)}
+            for s in self.seqs_by_len[n]:
+                if s in windows:
+                    out.extend(self.by_seq[s])
+        stoks = [stem(t) for t in toks if t not in GENERIC_STOP]
+        scored = []
+        for s in self.by_seq:
+            if not s:
+                continue
+            ss = [stem(t) for t in s]
+            best = 0.0
+            for w in range(max(1, len(ss) - 1), len(ss) + 2):
+                for i in range(max(1, len(stoks) - w + 1)):
+                    best = max(best, difflib.SequenceMatcher(None, ss, stoks[i:i + w]).ratio())
+            if best >= 0.5:
+                scored.append((-best, -len(ss), s))
+        for _, _, s in sorted(scored)[:k]:
+            out.extend(self.by_seq[s])
+        return list(dict.fromkeys(out))[:max(k, len(out) if len(out) <= k else k)]
+
     def match(self, text: str) -> tuple[tuple, str]:
         c = self.longest_substring(text)
         if c:
