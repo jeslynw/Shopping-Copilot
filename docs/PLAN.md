@@ -504,3 +504,39 @@ git init -b main && git add -A && git commit -m "P0: kit vendored, baseline repr
 gh repo create KevinAldrinTan900/techjam-shopping-copilot --private --source . --push  # private tonight; `gh repo edit --visibility public` at submission (§7b)
 ```
 Then P1 starts from the §3 experiment code (the in-memory scripts from this planning session are the reference implementation of every layer) → `copilot/` package + `starter/agent.py` shim.
+
+## 11. Revision 2 (29 Aug) — network access at scoring is assumed available
+
+**What changed.** The team has confirmed internet access and external LLM APIs are usable. This revision re-scopes the
+Claude layer from "opt-in demo polish" (§5) to a first-class, **auto-enabled** layer whenever `ANTHROPIC_API_KEY` is set.
+It does **not** move the LLM into ranking by default — every measurement in §3/§7b that argued against that still stands
+(one hallucinated constraint per session −0.066; ties are between bestsellers that satisfy identical constraints, so no
+model has information to break them; exact matching beats every fuzzier variant). The rules still say the organizer
+"may disable network", so the deterministic core remains the guaranteed path and every LLM call is fail-safe.
+
+**LLM uses in the scored path (each a `Config` flag, `copilot/llm.py`):**
+| use | when it fires | grounding | default |
+|---|---|---|---|
+| `llm_extract` | only when no simulator template matched the message (organizer paraphrasing) | constraints must be verbatim substrings of the message; category must be one of the offered vocab candidates; provenance `llm` → cutoff gate releases to a full shelf | on |
+| `llm_polish` | every turn | output assigned to `message` only; URLs and store names stripped | on |
+| `llm_rerank` | ablation: orders the top tier | only offered asins accepted, missing appended | **off** — measure, report, ship only if Δ ≥ +0.02 |
+
+Guarantees: one shared per-turn wall-clock budget (4 s), `max_retries=0`, failure budget 3/20 → breaker for the run,
+`thinking` disabled, structured JSON output with a plain-text fallback, usage summed per turn into `usage`. On clean
+public data the templates match 100%, so `llm_extract` never fires and the score is identical to §3n (0.958);
+its value shows only under paraphrase — which is why the fixture (below) comes first.
+
+**Build sequence changes.**
+- P3 (was P3a) is now on the critical path right after v1.0: `tools/gen_paraphrases.py` (Batches API, ~4k requests,
+  Haiku, <$5) → `data/paraphrases.jsonl` committed → `tools/paraphrase_eval.py` reports, side by side: clean; paraphrased
+  with deterministic clause extraction (`llm=false`); paraphrased with `llm_extract`. Decision rule unchanged (§3h).
+- P4 merges into P3: the invariance test (recs/ask bit-identical with polish on) is a unit test with a fake client and a
+  real-API run on 40 sessions; a 100-call latency/cost probe picks the models (`COPILOT_LLM_EXTRACT_MODEL` default
+  `claude-haiku-4-5`, `COPILOT_LLM_MODEL` default `claude-sonnet-5`).
+- README/REPORT: the organizer must export `ANTHROPIC_API_KEY` to get the LLM layer; without it the run is the
+  deterministic core (state both scores). Cost/latency disclosed from `usage` and `run_eval --profile`.
+
+**Risk register deltas.** R2 (network disabled) downgraded to medium — same score either way by construction, verified by
+`test_offline_flags_do_not_change_results`. New R15: API latency/429s in an 800-session run → budget + breaker + failure
+budget; a run with the breaker open is still a valid 0.958 run. New R16: key handling — never committed; `.env.example`
+documents it; the organizer's environment is assumed to carry it.

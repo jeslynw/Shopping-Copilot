@@ -97,7 +97,7 @@ def main() -> int:
         "rss_mb_incl_harness": round(rss_mb(), 1), "internal_exceptions": agent.internal_exceptions,
         "agent_contract_violations": agent.contract_violations, "harness_contract_violations": len(checked.violations),
         "init_error": agent.init_error, "python": platform.python_version(), "sqlite": sqlite3.sqlite_version,
-        "config": agent.cfg.__dict__, "llm": agent.polisher.summary() if agent.polisher else None,
+        "config": agent.cfg.__dict__, "llm": agent.llm.summary() if agent.llm else None,
     }
     res["profile"] = prof
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)

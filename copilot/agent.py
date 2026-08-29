@@ -1,7 +1,8 @@
-"""Shopping Copilot Agent — deterministic, offline, stdlib-only core (PLAN.md §5).
+"""Shopping Copilot Agent — deterministic, offline-capable core with a fail-safe Claude layer (docs/PLAN.md §5, §11).
 
-Per turn: extract → apply_reply → build_terms → retrieve → rank → exclusion → cutoff → ask → message → (polish) → validate.
-`__init__`, `reset` and `respond` never raise; every response has exactly the four contract keys.
+Per turn: extract (templates → LLM-grounded → clause) → apply_reply → build_terms → retrieve → rank (→ LLM rerank, ablation)
+→ exclusion → cutoff → ask → message (→ LLM polish) → validate.  `__init__`, `reset`, `respond` never raise; every response
+has exactly the four contract keys.  Without an API key (or with COPILOT_OFFLINE=1) the LLM layer is simply off.
 """
 from __future__ import annotations
 
@@ -13,16 +14,19 @@ from .catalog import Catalog
 from .config import Config, from_env
 from .contract import validate_response
 from .extract import Parsed, extract
-from .llm import Polisher
+from .llm import LLM
 from .policy import apply_reply, cutoff_k, exclusion, next_ask
 from .rank import Ranked, rank
 from .respond import build_message
 from .retrieve import build_terms, retrieve
 from .state import SessionState
 
+ALLOWED = {"category", "material", "color", "size", "style", "brand", "budget", "feature", "use_case", "other"}
+
 
 class Agent:
-    def __init__(self, catalog_path: str | Path = "data/catalog.jsonl", config: Optional[Config] = None) -> None:
+    def __init__(self, catalog_path: str | Path = "data/catalog.jsonl", config: Optional[Config] = None,
+                 llm_client=None) -> None:
         self.cfg = config or from_env()
         self.sessions: dict[str, SessionState] = {}
         self.catalog: Optional[Catalog] = None
@@ -37,9 +41,9 @@ class Agent:
             self.init_error = f"{type(e).__name__}: {e}"
         self.startup_s = time.perf_counter() - t0
         try:
-            self.polisher = Polisher(self.cfg)
+            self.llm = LLM(self.cfg, client=llm_client)
         except Exception:
-            self.polisher = None
+            self.llm = None
 
     # -- harness interface ------------------------------------------------------------------
     def reset(self, session_id: str, user_profile: dict) -> None:
@@ -79,11 +83,26 @@ class Agent:
         k_max = int(top_k) if isinstance(top_k, int) and not isinstance(top_k, bool) and top_k >= 1 else 10
         k_max = min(k_max, 100)
         st.messages.append(msg)
-        cfg, cat = self.cfg, self.catalog
+        cfg, cat, llm = self.cfg, self.catalog, self.llm
         if cat is None:
             return self._fallback(st), []
+        if llm is not None:
+            llm.begin_turn()
+
+        # ---- extraction: simulator templates first; LLM-grounded when they don't match; clause heuristic as the floor
         parsed = extract(msg, st.turn, cfg.extractor, cat.matcher)
+        if not parsed.template and llm is not None and llm.enabled and cfg.llm_extract:
+            cands = cat.matcher.candidates(msg) if st.turn == 1 else []
+            lp = llm.extract(msg, st.turn, cands)
+            if lp is not None:
+                if parsed.cat_prov == "exact" or not lp.categories:      # keep a deterministic exact category
+                    lp.categories, lp.cat_prov = parsed.categories, parsed.cat_prov
+                if not lp.constraints:                                    # keep the clause constraints as the floor
+                    lp.constraints = parsed.constraints
+                parsed = lp
         new = apply_reply(st, parsed, cfg)
+
+        # ---- retrieve + rank
         terms = build_terms(st, new, cfg, cat)
         cands = retrieve(cat, terms, st, cfg, k_max)
         if cfg.rerank:
@@ -91,6 +110,16 @@ class Agent:
         else:
             ranked = [Ranked(c.asin, 0, 0, cat.pop.get(c.asin, 0), c.bm25_rank, ()) for c in cands]
             tier = 0
+        if cfg.llm_rerank and llm is not None and llm.enabled and tier > 1:     # ablation only
+            head = ranked[:min(tier, k_max)]
+            titles = cat.titles([r.asin for r in head])
+            items = [{"asin": r.asin, "title": titles.get(r.asin, ("", ""))[0][:120], "matches": list(r.matched)[:4]} for r in head]
+            order = llm.rerank(items, [c.text for c in st.constraints], st.categories[0] if st.categories else None)
+            if order:
+                by = {r.asin: r for r in head}
+                ranked = [by[a] for a in order] + ranked[len(head):]
+
+        # ---- exclusion, cutoff, ask
         excl = exclusion(cfg, st, st.turn)
         if excl:
             ranked = [r for r in ranked if r.asin not in excl]
@@ -99,17 +128,18 @@ class Agent:
         ask = next_ask(st, cfg)
         st.last_asked = ask
         st.boundary_attr = None
+
+        # ---- message (+ optional polish)
         titles = cat.titles([top[0].asin]) if top else {}
         message = build_message(st, parsed, ask, top, k, tier, titles)
-        usage = (0, 0)
-        if self.polisher is not None and self.polisher.enabled:
+        if llm is not None and llm.enabled and cfg.llm_polish:
             facts = {"category": st.categories[0] if st.categories else None,
-                     "constraints": [c.text for c in st.constraints][-4:],
-                     "shown": len(top), "tier_size": tier, "ask": ask,
-                     "stores": [s for _, s in titles.values() if s]}
-            polished = self.polisher.rewrite(message, facts)
+                     "constraints": [c.text for c in st.constraints][-4:], "shown": len(top), "tier_size": tier,
+                     "ask": ask, "stores": [s for _, s in titles.values() if s]}
+            polished = llm.polish(message, facts)
             if polished:
-                message, usage = polished, self.polisher.last_usage
+                message = polished
+        usage = llm.turn_usage if llm is not None else (0, 0)
         out = {"message": message, "ask_attribute": ask,
                "recommendations": [{"parent_asin": r.asin} for r in top],
                "usage": {"prompt_tokens": int(usage[0]), "completion_tokens": int(usage[1])}}
@@ -120,7 +150,7 @@ class Agent:
             ask = next_ask(st, self.cfg)
         except Exception:
             ask = "feature"
-        if ask not in {"category", "material", "color", "size", "style", "brand", "budget", "feature", "use_case", "other"}:
+        if ask not in ALLOWED:
             ask = "feature"
         return {"message": "Let me narrow this down — which features matter most to you?", "ask_attribute": ask,
                 "recommendations": [], "usage": {"prompt_tokens": 0, "completion_tokens": 0}}

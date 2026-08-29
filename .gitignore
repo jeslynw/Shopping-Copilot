@@ -26,3 +26,5 @@ analysis/local_evaluator.py
 analysis/__pycache__/
 analysis/experiments/results/*.log
 analysis/experiments/results/run_all.out
+results_paraphrase.json
+data/paraphrases.jsonl.tmp

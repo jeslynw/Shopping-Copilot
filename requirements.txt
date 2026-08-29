@@ -1,3 +1,3 @@
 # No runtime dependencies. The official scored configuration (deterministic core, LLM off) is pure standard library:
 # sqlite3 with FTS5 (bundled with CPython on macOS/Linux/Windows), json, re, difflib. Python 3.10+ (tested on 3.11 and 3.14).
-# Development / optional extras live in requirements-dev.txt.
+# Optional Claude layer: pip install anthropic (auto-enabled when ANTHROPIC_API_KEY is set; see README). Dev extras: requirements-dev.txt.
