@@ -19,7 +19,7 @@ from collections import deque
 from typing import Optional
 
 from .config import Config, llm_provider_from_env
-from .extract import ATTR_WORD, BOILERPLATE, Parsed, STOP, TOKEN_RE, norm
+from .extract import ATTR_WORD, BOILERPLATE, Parsed, STOP, TOKEN_RE, norm, peel_leadin
 
 URL_RE = re.compile(r"https?://\S+|www\.\S+", re.I)
 KINDS = {"open_buying", "open_browsing", "open_override", "yield", "exhausted", "boundary", "override", "noinfo", "unknown"}
@@ -192,7 +192,7 @@ class LLM:
             if not isinstance(c, str):
                 continue
             c = " ".join(c.split()).strip(" ,.;:-—–\"'")
-            stripped = " ".join(BOILERPLATE.sub(" ", c).split()).strip(" ,.;:-—–\"'")   # drop lead-ins the model kept
+            stripped = peel_leadin(" ".join(BOILERPLATE.sub(" ", c).split()))          # drop lead-ins the model kept
             if stripped and norm(stripped) in msg_norm:
                 c = stripped
             toks = TOKEN_RE.findall(c.lower())
