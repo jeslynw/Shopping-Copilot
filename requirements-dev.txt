@@ -1,3 +1,4 @@
 pytest>=8          # tests/
 jsonschema>=4      # cross-checks responses against docs/agent_api_contract.json (the agent ships its own pure-python check)
-anthropic>=1.2     # Claude layer (grounded extraction fallback + message polish); on iff ANTHROPIC_API_KEY is set
+openai>=1.50       # LLM layer, OpenAI provider (grounded extraction fallback + message polish); on iff OPENAI_API_KEY is set
+anthropic>=1.2     # LLM layer, Anthropic provider; on iff ANTHROPIC_API_KEY is set

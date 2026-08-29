@@ -39,14 +39,48 @@ class Config:
     turn_budget_s: float = 8.0         # if a whole turn exceeds this, assume the harness may have dropped it (don't mark prev)
 
 
+def load_dotenv(path: "str | os.PathLike | None" = None) -> None:
+    """Read KEY=VALUE lines from <repo root>/.env (git-ignored) into os.environ without overriding existing variables."""
+    from pathlib import Path
+    p = Path(path) if path else Path(__file__).resolve().parent.parent / ".env"
+    try:
+        if not p.is_file():
+            return
+        for line in p.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            k = k.strip().lstrip("export ").strip()
+            v = v.split(" #", 1)[0].strip().strip('"').strip("'")
+            if k and v and k not in os.environ:
+                os.environ[k] = v
+    except Exception:
+        return
+
+
+def llm_provider_from_env() -> "str | None":
+    """openai | anthropic | None. COPILOT_LLM_PROVIDER overrides; otherwise whichever key is present (OpenAI first)."""
+    load_dotenv()
+    explicit = os.environ.get("COPILOT_LLM_PROVIDER", "").strip().lower()
+    if explicit in ("openai", "anthropic"):
+        return explicit
+    if os.environ.get("OPENAI_API_KEY", "").strip():
+        return "openai"
+    if os.environ.get("ANTHROPIC_API_KEY", "").strip():
+        return "anthropic"
+    return None
+
+
 def llm_enabled_from_env() -> bool:
-    """On when an API key is present, unless COPILOT_OFFLINE=1 or COPILOT_LLM=0. COPILOT_LLM=1 forces on."""
+    """On when a provider key is present, unless COPILOT_OFFLINE=1 or COPILOT_LLM=0. COPILOT_LLM=1 forces on."""
+    load_dotenv()
     if os.environ.get("COPILOT_OFFLINE") == "1":
         return False
     flag = os.environ.get("COPILOT_LLM")
-    if flag is not None:
+    if flag is not None and flag.strip() != "":
         return flag.strip() == "1"
-    return bool(os.environ.get("ANTHROPIC_API_KEY", "").strip())
+    return llm_provider_from_env() is not None
 
 
 def from_env(base: Config | None = None) -> Config:
