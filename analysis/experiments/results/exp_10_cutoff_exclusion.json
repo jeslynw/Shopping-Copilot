@@ -1,0 +1,1968 @@
+{
+ "experiment": "exp_10_cutoff_exclusion",
+ "rows": [
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.921923,
+   "mttc": 2.145,
+   "efficiency": 0.8855,
+   "recommended_technical_score": 0.953677,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 1.0,
+     "mttc": 2.6
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.921875,
+     "mttc": 2.0625
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.899896,
+     "mttc": 1.6125
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "label": "old matcher (lower only), R6 cutoff, turn\u22655 exclusion",
+   "config": {
+    "label": "old matcher (lower only), R6 cutoff, turn\u22655 exclusion",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "R6",
+    "exclusion": "turn5"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.1,
+   "p95_ms": 53.4,
+   "wall_s": 11.8,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 70,
+    "2": 61,
+    "3": 40,
+    "4": 28,
+    "5": 1
+   },
+   "rank_at_hit": {
+    "1": 175,
+    "2": 12,
+    "3": 5,
+    "4": 5,
+    "5": 1,
+    "7": 1,
+    "8": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.929464,
+   "mttc": 2.14,
+   "efficiency": 0.886,
+   "recommended_technical_score": 0.956039,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 1.0,
+     "mttc": 2.6
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.930208,
+     "mttc": 2.075
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.910417,
+     "mttc": 1.5875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "label": "norm() matcher, R6 cutoff, turn\u22655 exclusion",
+   "config": {
+    "label": "norm() matcher, R6 cutoff, turn\u22655 exclusion",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "R6",
+    "exclusion": "turn5"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.4,
+   "p95_ms": 53.7,
+   "wall_s": 11.8,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 70,
+    "2": 62,
+    "3": 39,
+    "4": 28,
+    "5": 1
+   },
+   "rank_at_hit": {
+    "1": 177,
+    "2": 11,
+    "3": 6,
+    "4": 5,
+    "7": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.921964,
+   "mttc": 2.12,
+   "efficiency": 0.888,
+   "recommended_technical_score": 0.954189,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.85,
+     "mttc": 2.4
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.930208,
+     "mttc": 2.05
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.910417,
+     "mttc": 1.5875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "label": "norm() matcher, info-gated cutoff, turn\u22655 exclusion",
+   "config": {
+    "label": "norm() matcher, info-gated cutoff, turn\u22655 exclusion",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "turn5"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.6,
+   "p95_ms": 54.1,
+   "wall_s": 11.8,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 70,
+    "2": 64,
+    "3": 39,
+    "4": 26,
+    "5": 1
+   },
+   "rank_at_hit": {
+    "1": 175,
+    "2": 11,
+    "3": 7,
+    "4": 5,
+    "6": 1,
+    "7": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.774954,
+   "mttc": 1.73,
+   "efficiency": 0.927,
+   "recommended_technical_score": 0.917886,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.85,
+     "mttc": 2.2
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.755139,
+     "mttc": 1.15
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "norm() matcher, no cutoff, turn\u22655 exclusion (conservative fallback)",
+   "config": {
+    "label": "norm() matcher, no cutoff, turn\u22655 exclusion (conservative fallback)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "turn5"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.0,
+   "p95_ms": 54.2,
+   "wall_s": 9.1,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 116,
+    "2": 42,
+    "3": 23,
+    "4": 18,
+    "5": 1
+   },
+   "rank_at_hit": {
+    "1": 133,
+    "2": 23,
+    "3": 13,
+    "4": 14,
+    "5": 5,
+    "6": 3,
+    "7": 4,
+    "8": 3,
+    "9": 1,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.91752,
+   "mttc": 2.125,
+   "efficiency": 0.8875,
+   "recommended_technical_score": 0.952756,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.5
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.930208,
+     "mttc": 2.05
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.910417,
+     "mttc": 1.5875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "label": "norm() matcher, info-gated cutoff, no exclusion",
+   "config": {
+    "label": "norm() matcher, info-gated cutoff, no exclusion",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.0,
+   "p95_ms": 53.4,
+   "wall_s": 11.7,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 70,
+    "2": 64,
+    "3": 39,
+    "4": 26,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 174,
+    "2": 11,
+    "3": 7,
+    "4": 5,
+    "6": 1,
+    "7": 1,
+    "9": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.937042,
+   "mttc": 2.155,
+   "efficiency": 0.8845,
+   "recommended_technical_score": 0.958013,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.7825,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 1.975
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.933333,
+     "mttc": 1.575
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.133333
+    }
+   },
+   "label": "SHIPPED: norm() + info-gated cutoff + previous-turn-only exclusion",
+   "config": {
+    "label": "SHIPPED: norm() + info-gated cutoff + previous-turn-only exclusion",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.1,
+   "p95_ms": 55.7,
+   "wall_s": 12.1,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 70,
+    "2": 69,
+    "3": 35,
+    "4": 12,
+    "5": 14
+   },
+   "rank_at_hit": {
+    "1": 180,
+    "2": 9,
+    "3": 5,
+    "4": 3,
+    "5": 1,
+    "6": 1,
+    "8": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.947917,
+   "mttc": 2.18,
+   "efficiency": 0.882,
+   "recommended_technical_score": 0.960775,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 1.0,
+     "mttc": 2.6
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 2.0
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.933333,
+     "mttc": 1.575
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.133333
+    }
+   },
+   "label": "SHIPPED + gated2 (recognised exhausted/boundary reply counts as yielded)",
+   "config": {
+    "label": "SHIPPED + gated2 (recognised exhausted/boundary reply counts as yielded)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated2",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.4,
+   "p95_ms": 56.0,
+   "wall_s": 12.2,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 70,
+    "2": 67,
+    "3": 35,
+    "4": 13,
+    "5": 15
+   },
+   "rank_at_hit": {
+    "1": 183,
+    "2": 8,
+    "3": 5,
+    "4": 3,
+    "6": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.936972,
+   "mttc": 2.155,
+   "efficiency": 0.8845,
+   "recommended_technical_score": 0.957992,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.781111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 1.975
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.933333,
+     "mttc": 1.575
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.133333
+    }
+   },
+   "label": "SHIPPED + query from extracted tokens (cap 32, DF-ordered) \u2014 P1 design",
+   "config": {
+    "label": "SHIPPED + query from extracted tokens (cap 32, DF-ordered) \u2014 P1 design",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "df_order": true,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.8,
+   "p95_ms": 53.9,
+   "wall_s": 11.7,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 70,
+    "2": 69,
+    "3": 35,
+    "4": 12,
+    "5": 14
+   },
+   "rank_at_hit": {
+    "1": 180,
+    "2": 9,
+    "3": 5,
+    "4": 3,
+    "5": 1,
+    "6": 1,
+    "9": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.925437,
+   "mttc": 2.13,
+   "efficiency": 0.887,
+   "recommended_technical_score": 0.955031,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.54623,
+     "mttc": 2.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 1.8625
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.933854,
+     "mttc": 1.6375
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.2
+    }
+   },
+   "label": "SHIPPED + extracted tokens + pool \u222a category members \u2014 P1 design",
+   "config": {
+    "label": "SHIPPED + extracted tokens + pool \u222a category members \u2014 P1 design",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "df_order": true,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": true,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.2,
+   "p95_ms": 55.3,
+   "wall_s": 11.9,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 75,
+    "2": 66,
+    "3": 32,
+    "4": 12,
+    "5": 15
+   },
+   "rank_at_hit": {
+    "1": 178,
+    "2": 6,
+    "3": 8,
+    "4": 3,
+    "6": 1,
+    "7": 1,
+    "8": 2,
+    "9": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.93252,
+   "mttc": 2.15,
+   "efficiency": 0.885,
+   "recommended_technical_score": 0.956756,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.687897,
+     "mttc": 2.2
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 1.8875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.933854,
+     "mttc": 1.6375
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.2
+    }
+   },
+   "label": "SHIPPED + pool 1000",
+   "config": {
+    "label": "SHIPPED + pool 1000",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 1000,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": false,
+   "p50_ms": 30.9,
+   "p95_ms": 60.0,
+   "wall_s": 13.2,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 74,
+    "2": 64,
+    "3": 35,
+    "4": 12,
+    "5": 15
+   },
+   "rank_at_hit": {
+    "1": 180,
+    "2": 6,
+    "3": 7,
+    "4": 2,
+    "6": 1,
+    "7": 1,
+    "8": 2,
+    "9": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.95,
+   "mrr": 0.95,
+   "mttc": 2.6,
+   "efficiency": 0.84,
+   "recommended_technical_score": 0.928,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.9,
+     "mttc": 3.2
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9375,
+     "mrr": 0.9375,
+     "mttc": 2.4875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9625,
+     "mrr": 0.9625,
+     "mttc": 1.975
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.966667,
+     "mttc": 4.366667
+    }
+   },
+   "label": "DEGENERATE always top-1 + prev-turn exclusion (disclosed, not shipped)",
+   "config": {
+    "label": "DEGENERATE always top-1 + prev-turn exclusion (disclosed, not shipped)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "top1",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": false,
+   "p50_ms": 30.8,
+   "p95_ms": 58.5,
+   "wall_s": 15.6,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 68,
+    "2": 63,
+    "3": 33,
+    "4": 13,
+    "5": 13
+   },
+   "rank_at_hit": {
+    "1": 190
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.995,
+   "mrr": 0.792875,
+   "mttc": 1.85,
+   "efficiency": 0.915,
+   "recommended_technical_score": 0.918362,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.6625,
+     "mttc": 3.2
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.749062,
+     "mttc": 1.5
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.797187,
+     "mttc": 1.2
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.941667,
+     "mttc": 4.066667
+    }
+   },
+   "label": "PARAPHRASED \u2014 SHIPPED",
+   "config": {
+    "label": "PARAPHRASED \u2014 SHIPPED",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": true,
+   "p50_ms": 42.7,
+   "p95_ms": 70.5,
+   "wall_s": 16.2,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 116,
+    "2": 42,
+    "3": 21,
+    "4": 5,
+    "5": 14,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 137,
+    "2": 26,
+    "3": 9,
+    "4": 12,
+    "5": 6,
+    "6": 6,
+    "8": 3
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.723881,
+   "mttc": 1.675,
+   "efficiency": 0.9325,
+   "recommended_technical_score": 0.903664,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.601944,
+     "mttc": 2.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.64934,
+     "mttc": 1.2625
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.731994,
+     "mttc": 1.125
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.941667,
+     "mttc": 4.133333
+    }
+   },
+   "label": "PARAPHRASED \u2014 SHIPPED + extracted tokens + pool \u222a category",
+   "config": {
+    "label": "PARAPHRASED \u2014 SHIPPED + extracted tokens + pool \u222a category",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "df_order": true,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": true,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": true,
+   "p50_ms": 41.2,
+   "p95_ms": 69.9,
+   "wall_s": 14.1,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 142,
+    "2": 21,
+    "3": 18,
+    "4": 2,
+    "5": 16,
+    "9": 1
+   },
+   "rank_at_hit": {
+    "1": 117,
+    "2": 32,
+    "3": 15,
+    "4": 13,
+    "5": 7,
+    "6": 6,
+    "7": 1,
+    "8": 2,
+    "9": 3,
+    "10": 4
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.77,
+   "mrr": 0.385752,
+   "mttc": 3.92,
+   "efficiency": 0.708,
+   "recommended_technical_score": 0.642326,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.7,
+     "mrr": 0.302778,
+     "mttc": 4.4
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.75,
+     "mrr": 0.36942,
+     "mttc": 3.8375
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.775,
+     "mrr": 0.396905,
+     "mttc": 3.4375
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.833333,
+     "mrr": 0.427222,
+     "mttc": 5.266667
+    }
+   },
+   "label": "PARAPHRASED \u2014 SHIPPED with template-only extractor (what breaks)",
+   "config": {
+    "label": "PARAPHRASED \u2014 SHIPPED with template-only extractor (what breaks)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn"
+   },
+   "paraphrase": true,
+   "p50_ms": 33.4,
+   "p95_ms": 59.3,
+   "wall_s": 24.6,
+   "agent_exceptions": 0,
+   "override_hr": 0.833333,
+   "hit_turns": {
+    "1": 93,
+    "2": 28,
+    "3": 15,
+    "4": 6,
+    "5": 12
+   },
+   "rank_at_hit": {
+    "1": 46,
+    "2": 27,
+    "3": 19,
+    "4": 14,
+    "5": 20,
+    "6": 10,
+    "7": 5,
+    "8": 5,
+    "9": 1,
+    "10": 7
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.995,
+   "mrr": 0.773113,
+   "mttc": 1.795,
+   "efficiency": 0.9205,
+   "recommended_technical_score": 0.913534,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.75,
+     "mttc": 3.5
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.731205,
+     "mttc": 1.5
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.762292,
+     "mttc": 1.2
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.921429,
+     "mttc": 3.6
+    }
+   },
+   "label": "PARAPHRASED \u2014 no cutoff, no exclusion (hybrid extractor)",
+   "config": {
+    "label": "PARAPHRASED \u2014 no cutoff, no exclusion (hybrid extractor)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": true,
+   "p50_ms": 42.1,
+   "p95_ms": 70.3,
+   "wall_s": 15.5,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 116,
+    "2": 42,
+    "3": 21,
+    "4": 19,
+    "9": 1
+   },
+   "rank_at_hit": {
+    "1": 132,
+    "2": 26,
+    "3": 11,
+    "4": 12,
+    "5": 6,
+    "6": 4,
+    "7": 5,
+    "8": 3
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.875,
+   "mrr": 0.561498,
+   "mttc": 3.8,
+   "efficiency": 0.72,
+   "recommended_technical_score": 0.749949,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.6,
+     "mrr": 0.55,
+     "mttc": 7.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.515813,
+     "mttc": 3.65
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.551057,
+     "mttc": 3.2625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.715,
+     "mttc": 4.466667
+    }
+   },
+   "label": "V1 accumulate + ask feature\u2192material\u2192color\u2192\u2026",
+   "config": {
+    "label": "V1 accumulate + ask feature\u2192material\u2192color\u2192\u2026",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": false,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 30.7,
+   "p95_ms": 51.8,
+   "wall_s": 22.1,
+   "agent_exceptions": 0,
+   "override_hr": 0.9,
+   "hit_turns": {
+    "1": 20,
+    "2": 62,
+    "3": 57,
+    "4": 25,
+    "5": 4,
+    "6": 3,
+    "7": 2,
+    "9": 2
+   },
+   "rank_at_hit": {
+    "1": 88,
+    "2": 22,
+    "3": 17,
+    "4": 10,
+    "5": 3,
+    "6": 10,
+    "7": 2,
+    "8": 9,
+    "9": 5,
+    "10": 9
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.975,
+   "mrr": 0.643284,
+   "mttc": 2.585,
+   "efficiency": 0.8415,
+   "recommended_technical_score": 0.848785,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.596667,
+     "mttc": 3.9
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9875,
+     "mrr": 0.616205,
+     "mttc": 2.3875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.975,
+     "mrr": 0.610218,
+     "mttc": 2.1
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.819206,
+     "mttc": 3.966667
+    }
+   },
+   "label": "V6 rerank top-300 by #verbatim matches, category 2nd key",
+   "config": {
+    "label": "V6 rerank top-300 by #verbatim matches, category 2nd key",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.0,
+   "p95_ms": 53.0,
+   "wall_s": 14.3,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 34,
+    "2": 82,
+    "3": 54,
+    "4": 24,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 102,
+    "2": 25,
+    "3": 15,
+    "4": 12,
+    "5": 8,
+    "6": 11,
+    "7": 8,
+    "8": 5,
+    "9": 5,
+    "10": 4
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.771085,
+   "mttc": 1.74,
+   "efficiency": 0.926,
+   "recommended_technical_score": 0.916525,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.756577,
+     "mttc": 1.1625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "+ popularity tie-break",
+   "config": {
+    "label": "+ popularity tie-break",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 26.8,
+   "p95_ms": 52.9,
+   "wall_s": 9.1,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 115,
+    "2": 43,
+    "3": 23,
+    "4": 18,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 132,
+    "2": 23,
+    "3": 14,
+    "4": 13,
+    "5": 5,
+    "6": 3,
+    "7": 5,
+    "8": 3,
+    "9": 1,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.77051,
+   "mttc": 1.735,
+   "efficiency": 0.9265,
+   "recommended_technical_score": 0.916453,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.755139,
+     "mttc": 1.15
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "+ norm() six-field matcher",
+   "config": {
+    "label": "+ norm() six-field matcher",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 26.5,
+   "p95_ms": 53.7,
+   "wall_s": 9.0,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 116,
+    "2": 42,
+    "3": 23,
+    "4": 18,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 132,
+    "2": 23,
+    "3": 13,
+    "4": 14,
+    "5": 5,
+    "6": 3,
+    "7": 4,
+    "8": 3,
+    "9": 2,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.92502,
+   "mttc": 2.145,
+   "efficiency": 0.8855,
+   "recommended_technical_score": 0.954606,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.911111,
+     "mttc": 2.7
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.930208,
+     "mttc": 2.075
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.910417,
+     "mttc": 1.5875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "label": "+ R6 cutoff (tier>10 & turn\u22643 \u2192 top-1)",
+   "config": {
+    "label": "+ R6 cutoff (tier>10 & turn\u22643 \u2192 top-1)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "R6",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.8,
+   "p95_ms": 53.0,
+   "wall_s": 11.6,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 70,
+    "2": 62,
+    "3": 39,
+    "4": 28,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 176,
+    "2": 11,
+    "3": 6,
+    "4": 5,
+    "7": 1,
+    "9": 1
+   }
+  }
+ ],
+ "notes": {
+  "shipped_ci95": [
+   0.9484,
+   0.9666375
+  ]
+ }
+}

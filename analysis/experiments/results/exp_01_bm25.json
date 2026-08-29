@@ -1,0 +1,508 @@
+{
+ "experiment": "exp_01_bm25",
+ "rows": [
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.115,
+   "mrr": 0.068575,
+   "mttc": 9.895,
+   "efficiency": 0.1105,
+   "recommended_technical_score": 0.100173,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.0,
+     "mrr": 0.0,
+     "mttc": 11.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.025,
+     "mrr": 0.004514,
+     "mttc": 10.75
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.225,
+     "mrr": 0.129425,
+     "mttc": 8.75
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.1,
+     "mrr": 0.1,
+     "mttc": 10.3
+    }
+   },
+   "label": "V0 stateless, never asks",
+   "config": {
+    "label": "V0 stateless, never asks",
+    "accumulate": false,
+    "ask": false,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": false,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 0.0,
+   "p95_ms": 14.9,
+   "wall_s": 3.7,
+   "agent_exceptions": 0,
+   "override_hr": 0.1,
+   "hit_turns": {
+    "1": 20,
+    "4": 3
+   },
+   "rank_at_hit": {
+    "1": 11,
+    "2": 2,
+    "3": 1,
+    "4": 2,
+    "6": 1,
+    "7": 1,
+    "8": 2,
+    "9": 2,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.875,
+   "mrr": 0.561498,
+   "mttc": 3.8,
+   "efficiency": 0.72,
+   "recommended_technical_score": 0.749949,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.6,
+     "mrr": 0.55,
+     "mttc": 7.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.515813,
+     "mttc": 3.65
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.551057,
+     "mttc": 3.2625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.715,
+     "mttc": 4.466667
+    }
+   },
+   "label": "V1 accumulate + ask feature\u2192material\u2192color\u2192\u2026",
+   "config": {
+    "label": "V1 accumulate + ask feature\u2192material\u2192color\u2192\u2026",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": false,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 29.4,
+   "p95_ms": 50.4,
+   "wall_s": 21.1,
+   "agent_exceptions": 0,
+   "override_hr": 0.9,
+   "hit_turns": {
+    "1": 20,
+    "2": 62,
+    "3": 57,
+    "4": 25,
+    "5": 4,
+    "6": 3,
+    "7": 2,
+    "9": 2
+   },
+   "rank_at_hit": {
+    "1": 88,
+    "2": 22,
+    "3": 17,
+    "4": 10,
+    "5": 3,
+    "6": 10,
+    "7": 2,
+    "8": 9,
+    "9": 5,
+    "10": 9
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.885,
+   "mrr": 0.568085,
+   "mttc": 3.81,
+   "efficiency": 0.719,
+   "recommended_technical_score": 0.756726,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.758333,
+     "mttc": 4.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.515114,
+     "mttc": 3.725
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.875,
+     "mrr": 0.543606,
+     "mttc": 3.525
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.711204,
+     "mttc": 4.633333
+    }
+   },
+   "label": "V2 = V1 + boundary re-ask + re-ask while reply yields 2",
+   "config": {
+    "label": "V2 = V1 + boundary re-ask + re-ask while reply yields 2",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": true,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.8,
+   "p95_ms": 50.3,
+   "wall_s": 21.5,
+   "agent_exceptions": 0,
+   "override_hr": 0.9,
+   "hit_turns": {
+    "1": 20,
+    "2": 62,
+    "3": 39,
+    "4": 42,
+    "5": 9,
+    "6": 2,
+    "7": 1,
+    "8": 2
+   },
+   "rank_at_hit": {
+    "1": 90,
+    "2": 19,
+    "3": 18,
+    "4": 11,
+    "5": 4,
+    "6": 9,
+    "7": 5,
+    "8": 7,
+    "9": 7,
+    "10": 7
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.805,
+   "mrr": 0.536135,
+   "mttc": 4.365,
+   "efficiency": 0.6635,
+   "recommended_technical_score": 0.696041,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.8,
+     "mrr": 0.67,
+     "mttc": 4.9
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.7875,
+     "mrr": 0.522584,
+     "mttc": 4.3625
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8,
+     "mrr": 0.466607,
+     "mttc": 4.15
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.866667,
+     "mrr": 0.713056,
+     "mttc": 4.766667
+    }
+   },
+   "label": "V3 = V2 + hard `categories:` filter from turn-1 phrase",
+   "config": {
+    "label": "V3 = V2 + hard `categories:` filter from turn-1 phrase",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": true,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": true,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 2.1,
+   "p95_ms": 5.1,
+   "wall_s": 2.1,
+   "agent_exceptions": 0,
+   "override_hr": 0.866667,
+   "hit_turns": {
+    "1": 21,
+    "2": 56,
+    "3": 36,
+    "4": 40,
+    "5": 7,
+    "8": 1
+   },
+   "rank_at_hit": {
+    "1": 91,
+    "2": 9,
+    "3": 9,
+    "4": 10,
+    "5": 10,
+    "6": 9,
+    "7": 4,
+    "8": 8,
+    "9": 5,
+    "10": 6
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.8,
+   "mrr": 0.53728,
+   "mttc": 4.095,
+   "efficiency": 0.6905,
+   "recommended_technical_score": 0.699284,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.8,
+     "mrr": 0.8,
+     "mttc": 5.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.7875,
+     "mrr": 0.48746,
+     "mttc": 4.0625
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8,
+     "mrr": 0.493864,
+     "mttc": 3.7375
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.833333,
+     "mrr": 0.698333,
+     "mttc": 4.833333
+    }
+   },
+   "label": "V4 ref: ask `other` + catfilter (rule exploit, not to ship)",
+   "config": {
+    "label": "V4 ref: ask `other` + catfilter (rule exploit, not to ship)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": true,
+    "boundary_reask": true,
+    "reask_on_yield2": true,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": true,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 2.0,
+   "p95_ms": 5.0,
+   "wall_s": 1.8,
+   "agent_exceptions": 0,
+   "override_hr": 0.833333,
+   "hit_turns": {
+    "1": 21,
+    "2": 79,
+    "3": 40,
+    "4": 20
+   },
+   "rank_at_hit": {
+    "1": 89,
+    "2": 15,
+    "3": 9,
+    "4": 8,
+    "5": 11,
+    "6": 8,
+    "7": 5,
+    "8": 7,
+    "9": 3,
+    "10": 5
+   }
+  }
+ ],
+ "notes": {}
+}

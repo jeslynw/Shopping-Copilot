@@ -1,0 +1,4 @@
+# No runtime dependencies. The official scored configuration (deterministic core, LLM off) is pure standard library:
+# sqlite3 with FTS5 (bundled with CPython on macOS/Linux/Windows), json, re, difflib.
+# Python 3.10+ (developed and tested on 3.11; see .python-version).
+# Optional extras: requirements-llm.txt (Claude polisher for the demo, opt-in via COPILOT_LLM=1) and requirements-dev.txt (tests).
