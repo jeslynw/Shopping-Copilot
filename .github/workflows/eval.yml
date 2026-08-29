@@ -1,0 +1,68 @@
+name: eval
+
+# Fresh-clone reproduction of the scored configuration (docs/PLAN.md §6 P2, §9):
+# download the catalog → run the OFFICIAL evaluator → assert TechnicalScore ≥ 0.94, override HR = 1.00, zero exceptions /
+# contract violations → run twice under different PYTHONHASHSEED values and require identical per-session results (R14).
+on:
+  push:
+    branches: [main, core]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      COPILOT_OFFLINE: "1"        # scored configuration = deterministic core; no key, no network use by the agent
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dev requirements (the scored path itself has no runtime dependencies)
+        run: python -m pip install --quiet pytest jsonschema
+
+      - name: Download the catalog from the kit release (SHA256-verified, not committed — see DATA_ATTRIBUTION.md)
+        run: bash tools/download_data.sh
+
+      - name: Official command through the kit shim
+        run: python -m evaluator.local_evaluator --output results_official.json
+
+      - name: Contract-checked run, two hash seeds
+        run: |
+          PYTHONHASHSEED=0    python tools/run_eval.py --profile --output results_seed0.json
+          PYTHONHASHSEED=4242 python tools/run_eval.py --quiet   --output results_seed1.json
+
+      - name: Assert score, safety gates and seed-independence
+        run: |
+          python - <<'EOF'
+          import json
+          off = json.load(open("results_official.json"))
+          a = json.load(open("results_seed0.json"))
+          b = json.load(open("results_seed1.json"))
+          score = a["recommended_technical_score"]
+          print(f"TechnicalScore {score:.4f}  HR@10 {a['hit_rate_at_10']:.3f}  MRR {a['mrr']:.4f}  MTTC {a['mttc']:.3f}")
+          print("profile:", {k: v for k, v in a["profile"].items() if k not in ("config", "llm")})
+          assert score >= 0.94, f"TechnicalScore {score} < 0.94"
+          ovr = a["scenario_metrics"]["intent_override"]["hit_rate_at_10"]
+          assert ovr >= 0.99, f"override HR {ovr} — exclusion/cutoff safety regression"
+          p = a["profile"]
+          assert p["init_error"] is None, p["init_error"]
+          assert p["internal_exceptions"] == 0, f"{p['internal_exceptions']} exceptions caught inside the agent"
+          assert p["agent_contract_violations"] == 0 and p["harness_contract_violations"] == 0, "contract violations"
+          assert off["recommended_technical_score"] == score, "official command and tools/run_eval.py disagree"
+          assert a["sessions"] == b["sessions"], "per-session results differ between PYTHONHASHSEED runs (R14)"
+          print("ok: score gate, override safety, contract, determinism")
+          EOF
+
+      - name: Unit tests
+        run: python -m pytest -q
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results
+          path: results_*.json

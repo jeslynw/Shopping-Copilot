@@ -1,0 +1,1855 @@
+{
+ "date": "2026-08-29",
+ "dataset": "data/public_set.jsonl",
+ "sessions": 200,
+ "paraphrase": false,
+ "styles": null,
+ "python": "3.11.15",
+ "sqlite": "3.53.1",
+ "rows": [
+  {
+   "technical_score": 0.10671,
+   "hit_rate_at_10": 0.125,
+   "mrr": 0.068034,
+   "mttc": 9.81,
+   "override_hr": 0.133333,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.0,
+     "mrr": 0.0,
+     "mttc": 11.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.025,
+     "mrr": 0.004514,
+     "mttc": 10.75
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.2375,
+     "mrr": 0.126508,
+     "mttc": 8.625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.133333,
+     "mrr": 0.104167,
+     "mttc": 10.066667
+    }
+   },
+   "wall_s": 14.4,
+   "config": null,
+   "key": "starter",
+   "label": "kit starter (stateless BM25, never asks)",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.754375,
+   "hit_rate_at_10": 0.88,
+   "mrr": 0.561915,
+   "mttc": 3.71,
+   "override_hr": 0.9,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.7,
+     "mrr": 0.558333,
+     "mttc": 5.5
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.515813,
+     "mttc": 3.65
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.551057,
+     "mttc": 3.2625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.715,
+     "mttc": 4.466667
+    }
+   },
+   "wall_s": 21.1,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 29.8,
+   "p95_ms": 50.8,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "bm25_ask",
+   "label": "BM25 over accumulated messages + fixed ask order feature\u2192material\u2192color\u2192\u2026",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.826173,
+   "hit_rate_at_10": 0.95,
+   "mrr": 0.630577,
+   "mttc": 2.9,
+   "override_hr": 0.966667,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.683333,
+     "mttc": 4.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9625,
+     "mrr": 0.632912,
+     "mttc": 2.7125
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9375,
+     "mrr": 0.560446,
+     "mttc": 2.525
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.793783,
+     "mttc": 4.033333
+    }
+   },
+   "wall_s": 18.9,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": false,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 33.6,
+   "p95_ms": 59.2,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "rerank",
+   "label": "+ verbatim constraint-satisfaction rerank of the BM25 top-300",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.848535,
+   "hit_rate_at_10": 0.975,
+   "mrr": 0.64245,
+   "mttc": 2.585,
+   "override_hr": 0.966667,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.596667,
+     "mttc": 3.9
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9875,
+     "mrr": 0.616205,
+     "mttc": 2.3875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.975,
+     "mrr": 0.608135,
+     "mttc": 2.1
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.819206,
+     "mttc": 3.966667
+    }
+   },
+   "wall_s": 16.4,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 33.0,
+   "p95_ms": 58.5,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "category",
+   "label": "+ coarse-category match as the 2nd sort key",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.916525,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.771085,
+   "mttc": 1.74,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.756577,
+     "mttc": 1.1625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "wall_s": 10.3,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 29.7,
+   "p95_ms": 57.5,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "popularity",
+   "label": "+ popularity tie-break inside the tied tier (MostPop, `rating_number`)",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.913286,
+   "hit_rate_at_10": 0.995,
+   "mrr": 0.769954,
+   "mttc": 1.76,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.75,
+     "mttc": 2.8
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.755139,
+     "mttc": 1.15
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "wall_s": 11.9,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 33.8,
+   "p95_ms": 64.6,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "norm",
+   "label": "+ norm() six-field matcher (incl. description), extracted-term query",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.951339,
+   "hit_rate_at_10": 0.995,
+   "mrr": 0.924464,
+   "mttc": 2.175,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.9,
+     "mttc": 3.2
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.930208,
+     "mttc": 2.075
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.910417,
+     "mttc": 1.6
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "wall_s": 15.8,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "R6",
+    "exclusion": "none",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 36.4,
+   "p95_ms": 68.3,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "r6",
+   "label": "+ R6 cutoff: tier > 10 & turn \u2264 3 \u2192 single pick (ungated)",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.948839,
+   "hit_rate_at_10": 0.995,
+   "mrr": 0.914464,
+   "mttc": 2.15,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.75,
+     "mttc": 3.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.930208,
+     "mttc": 2.05
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.904167,
+     "mttc": 1.5875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "wall_s": 15.6,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "none",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 36.1,
+   "p95_ms": 69.7,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "gated",
+   "label": "+ information gate on the cutoff (template-provenance, previous reply yielded)",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.957992,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.936972,
+   "mttc": 2.155,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.781111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 1.975
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.933333,
+     "mttc": 1.575
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.133333
+    }
+   },
+   "wall_s": 16.6,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 37.9,
+   "p95_ms": 71.0,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "shipped",
+   "label": "SHIPPED = + previous-turn-only exclusion (no detection, self-healing)",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.928,
+   "hit_rate_at_10": 0.95,
+   "mrr": 0.95,
+   "mttc": 2.6,
+   "override_hr": 0.966667,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.9,
+     "mttc": 3.2
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9375,
+     "mrr": 0.9375,
+     "mttc": 2.4875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9625,
+     "mrr": 0.9625,
+     "mttc": 1.975
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.966667,
+     "mttc": 4.366667
+    }
+   },
+   "wall_s": 20.6,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "top1",
+    "exclusion": "prev_turn",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 41.0,
+   "p95_ms": 73.4,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "top1",
+   "label": "always exactly 1 item, no gate \u2014 metric artefact, NOT shipped",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.880501,
+   "hit_rate_at_10": 0.99,
+   "mrr": 0.733671,
+   "mttc": 2.73,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.736667,
+     "mttc": 4.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9875,
+     "mrr": 0.697932,
+     "mttc": 2.5875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.713189,
+     "mttc": 2.1625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.882593,
+     "mttc": 4.2
+    }
+   },
+   "wall_s": 22.5,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 41.3,
+   "p95_ms": 74.3,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "no_pop",
+   "label": "no popularity prior (BM25 tie-break), otherwise shipped",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.922067,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.793556,
+   "mttc": 1.8,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.85,
+     "mttc": 2.2
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.751146,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.773368,
+     "mttc": 1.15
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.941667,
+     "mttc": 4.066667
+    }
+   },
+   "wall_s": 13.4,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "prev_turn",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 36.0,
+   "p95_ms": 74.1,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "no_cutoff",
+   "label": "shipped without the cutoff (always the full shelf)",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.948839,
+   "hit_rate_at_10": 0.995,
+   "mrr": 0.914464,
+   "mttc": 2.15,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.75,
+     "mttc": 3.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.930208,
+     "mttc": 2.05
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.904167,
+     "mttc": 1.5875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "wall_s": 15.6,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "none",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 36.3,
+   "p95_ms": 68.7,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "no_excl",
+   "label": "shipped without exclusion",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.953439,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.919464,
+   "mttc": 2.12,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.85,
+     "mttc": 2.4
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.930208,
+     "mttc": 2.05
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.904167,
+     "mttc": 1.5875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "wall_s": 15.3,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "turn5",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 36.2,
+   "p95_ms": 67.1,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "turn5",
+   "label": "cumulative exclusion from turn \u2265 5 (earlier revision)",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.834187,
+   "hit_rate_at_10": 0.865,
+   "mrr": 0.809958,
+   "mttc": 3.065,
+   "override_hr": 0.1,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.7825,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.959375,
+     "mttc": 1.9625
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.939583,
+     "mttc": 1.575
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.1,
+     "mrr": 0.075,
+     "mttc": 10.233333
+    }
+   },
+   "wall_s": 29.2,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "naive",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 52.9,
+   "p95_ms": 87.0,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "naive_excl",
+   "label": "naive cumulative exclusion \u2014 deletes the target in override sessions",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.960775,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.947917,
+   "mttc": 2.18,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 1.0,
+     "mttc": 2.6
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 2.0
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.933333,
+     "mttc": 1.575
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.133333
+    }
+   },
+   "wall_s": 16.9,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated2",
+    "exclusion": "prev_turn",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 38.4,
+   "p95_ms": 72.2,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "gated2",
+   "label": "gate also released by recognised exhausted/boundary replies",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.955031,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.925437,
+   "mttc": 2.13,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.54623,
+     "mttc": 2.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 1.8625
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.933854,
+     "mttc": 1.6375
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.2
+    }
+   },
+   "wall_s": 18.4,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": true,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 44.2,
+   "p95_ms": 79.5,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "pool_union",
+   "label": "pool = top-300 \u222a matched-category members",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.955981,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.929603,
+   "mttc": 2.145,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.612897,
+     "mttc": 2.1
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.946875,
+     "mttc": 1.8875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.935937,
+     "mttc": 1.6375
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.972222,
+     "mttc": 4.2
+    }
+   },
+   "wall_s": 24.0,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 1000,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 58.5,
+   "p95_ms": 93.4,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "pool1000",
+   "label": "pool 1000 instead of 300",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.934502,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.844673,
+   "mttc": 1.945,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.781111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.8938,
+     "mttc": 1.8125
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.773368,
+     "mttc": 1.15
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.925,
+     "mttc": 4.3
+    }
+   },
+   "wall_s": 13.8,
+   "config": {
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "clause",
+    "query_source": "extracted",
+    "max_terms": 32,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "prev_turn",
+    "llm": false,
+    "llm_extract": false,
+    "llm_polish": true,
+    "llm_rerank": false,
+    "llm_budget_s": 4.0,
+    "turn_budget_s": 8.0
+   },
+   "p50_ms": 34.4,
+   "p95_ms": 68.1,
+   "internal_exceptions": 0,
+   "contract_violations": 0,
+   "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "extract_model": "gpt-4.1-mini",
+    "polish_model": "gpt-4.1-mini",
+    "calls": 0,
+    "failures": 0,
+    "budget_skips": 0,
+    "p50_ms": 0,
+    "p95_ms": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "breaker_open": false
+   },
+   "key": "clause",
+   "label": "clause-only extractor (robustness tax on clean strings)",
+   "kind": "copilot"
+  },
+  {
+   "technical_score": 0.680987,
+   "hit_rate_at_10": 0.79,
+   "mrr": 0.51229,
+   "mttc": 4.385,
+   "override_hr": 0.866667,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.6,
+     "mrr": 0.47,
+     "mttc": 6.2
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.775,
+     "mrr": 0.500382,
+     "mttc": 4.45
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8,
+     "mrr": 0.452946,
+     "mttc": 3.9875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.866667,
+     "mrr": 0.716389,
+     "mttc": 4.666667
+    }
+   },
+   "wall_s": 2.1,
+   "p50_ms": 2.2,
+   "p95_ms": 5.1,
+   "internal_exceptions": 0,
+   "contract_violations": null,
+   "config": {
+    "label": "V1 + boundary re-ask",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": true,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "key": "hard_cat",
+   "label": "hard `categories:` FTS filter instead of the sort key (V3) \u2014 reference impl.",
+   "kind": "reference"
+  },
+  {
+   "technical_score": 0.764727,
+   "hit_rate_at_10": 0.885,
+   "mrr": 0.565758,
+   "mttc": 3.375,
+   "override_hr": 0.866667,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.811111,
+     "mttc": 4.1
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.518621,
+     "mttc": 3.2375
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.538239,
+     "mttc": 2.9625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.866667,
+     "mrr": 0.683056,
+     "mttc": 4.6
+    }
+   },
+   "wall_s": 18.3,
+   "p50_ms": 29.7,
+   "p95_ms": 50.7,
+   "internal_exceptions": 0,
+   "contract_violations": null,
+   "config": {
+    "label": "V1 + boundary re-ask",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": true,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "key": "other",
+   "label": "`other` ask exploit (V4) \u2014 reference impl.",
+   "kind": "reference"
+  },
+  {
+   "technical_score": 0.961139,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.942131,
+   "mttc": 2.075,
+   "override_hr": 1.0,
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.786667,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.959375,
+     "mttc": 1.9625
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.939583,
+     "mttc": 1.575
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.954762,
+     "mttc": 3.633333
+    }
+   },
+   "wall_s": 10.9,
+   "p50_ms": 27.1,
+   "p95_ms": 52.9,
+   "internal_exceptions": 0,
+   "contract_violations": null,
+   "config": {
+    "label": "SHIPPED: norm() + info-gated cutoff + previous-turn-only exclusion",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "gated",
+    "exclusion": "override_safe"
+   },
+   "key": "detect_excl",
+   "label": "detection-gated (override-safe) cumulative exclusion \u2014 reference impl.",
+   "kind": "reference"
+  }
+ ],
+ "per_session_cutoff_accounting": {
+  "sessions": 200,
+  "delayed": 59,
+  "lost": 0,
+  "rank_improved": 56,
+  "net_hurt": 14,
+  "net_helped": 55,
+  "unchanged": 131,
+  "mean_delta": 0.0359,
+  "worst_delta": -0.2467,
+  "best_delta": 0.2467
+ }
+}
