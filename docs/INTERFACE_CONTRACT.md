@@ -1,4 +1,4 @@
-# Interface contract — `copilot/` package (P0 deliverable, PLAN.md §5/§6)
+# Interface contract — `copilot/` package (P0 deliverable, docs/PLAN.md §5/§6)
 
 One page so tracks B (robustness), C (LLM polisher) and D (tooling/demo) can code against the core
 before A finishes it. Names here are binding; change them only via a PR that also updates this file.

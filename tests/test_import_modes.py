@@ -41,3 +41,11 @@ def test_kit_harness_import_path():
     r = subprocess.run([sys.executable, "-c", "from starter.agent import Agent; import copilot.agent as c; "
                         "assert Agent is c.Agent; print('ok')"], cwd=ROOT, capture_output=True, text=True)
     assert r.stdout.strip() == "ok", r.stderr[-1000:]
+
+
+def test_agent_env_switch_selects_baseline():
+    """AGENT=baseline makes the kit harness import the untouched kit starter instead of the team agent."""
+    r = subprocess.run([sys.executable, "-c", "from starter.agent import Agent; import starter.baseline_agent as b; "
+                        "assert Agent is b.Agent; print('ok')"], cwd=ROOT, env={**os.environ, "AGENT": "baseline"},
+                       capture_output=True, text=True)
+    assert r.stdout.strip() == "ok", r.stderr[-1000:]
