@@ -451,7 +451,7 @@ Both completed designs (A/C "ship-early", B "judge-facing") independently conver
 ## 8. Open questions
 
 Answered 28 Aug: team 3–5 · Claude + fallback · prior work allowed · CLI demo · top-1 cutoff shipped with transparent framing.
-Remaining (defaults in brackets, proceed unless told otherwise): GitHub repo name/owner [`kevintan-cmyk/techjam-shopping-copilot`, **private until submission**]; teammate OSes for setup docs [macOS/Linux; Windows via WSL]; who records the video [track D owner]; Anthropic key availability [one shared dev key via `.env`, never committed; needed only for the paraphrase fixture, the demo polisher, and REPORT drafting].
+Remaining (defaults in brackets, proceed unless told otherwise): GitHub repo name/owner [`KevinAldrinTan900/techjam-shopping-copilot`, **private until submission**]; teammate OSes for setup docs [macOS/Linux; Windows via WSL]; who records the video [track D owner]; Anthropic key availability [one shared dev key via `.env`, never committed; needed only for the paraphrase fixture, the demo polisher, and REPORT drafting].
 
 **Decision the adversarial pass re-opened, resolved without asking:** keep the *gated* top-1 cutoff the user chose, even though an ungated always-top-1 scores 0.969 > 0.962. Shipping the ungated version would be pure metric gaming and indefensible to judges; the gated version is defensible **only** if the 0.969 row is disclosed and the gate is framed as a product choice. That disclosure is now mandatory in REPORT/Devpost/video (§3j (6), §4 framing rules).
 
@@ -501,6 +501,6 @@ printf 'data/catalog.jsonl\ndata/catalog.jsonl.gz\n.venv/\nresults.json\n.env\n_
 # gate: reproduce the baseline exactly
 python -m evaluator.local_evaluator            # expect hit_rate_at_10 0.125, mrr 0.068034, mttc 9.81
 git init -b main && git add -A && git commit -m "P0: kit vendored, baseline reproduced"
-gh repo create kevintan-cmyk/techjam-shopping-copilot --private --source . --push  # private tonight; `gh repo edit --visibility public` at submission (§7b)
+gh repo create KevinAldrinTan900/techjam-shopping-copilot --private --source . --push  # private tonight; `gh repo edit --visibility public` at submission (§7b)
 ```
 Then P1 starts from the §3 experiment code (the in-memory scripts from this planning session are the reference implementation of every layer) → `copilot/` package + `starter/agent.py` shim.
