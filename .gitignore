@@ -1,3 +1,4 @@
+# --- kit (organizer) ---
 __pycache__/
 *.py[cod]
 .DS_Store
@@ -16,3 +17,12 @@ docs/participant_release_checklist.md
 tests/test_5core_builder.py
 tests/test_organizer_pipeline.py
 *.log
+# --- team ---
+data/catalog.jsonl.gz
+.venv/
+.pytest_cache/
+analysis/*.jsonl
+analysis/local_evaluator.py
+analysis/__pycache__/
+analysis/experiments/results/*.log
+analysis/experiments/results/run_all.out

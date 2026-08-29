@@ -1,0 +1,3 @@
+pytest>=8
+jsonschema>=4     # cross-checks responses against docs/agent_api_contract.json (the agent ships its own pure-python check)
+psutil>=5         # optional, profiling
