@@ -137,7 +137,10 @@ RE_OVERRIDE = re.compile(r"^Actually, ignore my earlier preference\. What I need
 RE_NOINFO = re.compile(r"^Those options are not quite right yet")
 
 BOILERPLATE = re.compile(
-    r"\b(hi|hello|hey|honestly|mostly|also|today|"
+    r"\b(hi|hello|hey( there)?|honestly|mostly|also|today|oh|so|well|"
+    r"(i'?m|i am) (currently )?(on the hunt for|seeking|searching for|after)( some)?|just so you know|just thought i'?d (mention|share)( it)?|"
+    r"pretty straightforward|thanks( a bunch| so much)?|thank you|any recommendations|would love some tips( or recommendations)?( if you have any)?|"
+    r"gotta love that|don'?t you|you know|right\?|let me know if you need anything( else)?|"
     r"i'?m looking for|i am looking for|looking for|looking at|searching for|i'?d like to look at|i'?d like|i'?d say|"
     r"i need|i want|i'?m after|now i need|i'?m browsing|just exploring( options)?( in)?|show me( some)?|"
     r"can you help me find|help me find|it must have|non-?negotiable|one thing that'?s essential|the key thing for me is|"
@@ -150,6 +153,32 @@ BOILERPLATE = re.compile(
     r"use your judgment|those options are not quite right yet|ask me about one specific attribute|ask me something specific)\b",
     re.I)
 ATTR_WORD = re.compile(r"\b(feature|material|color|size|style|use_case|budget|category|brand|other)\b", re.I)
+
+# words that can only be a lead-in, never the start of a catalog attribute string
+LEADIN = GENERIC_STOP | {
+    "oh", "so", "well", "ok", "okay", "what", "matters", "matter", "most", "key", "requirement", "requirements", "need", "needs",
+    "needed", "want", "wants", "prefer", "prefers", "preferably", "ideally", "must", "have", "has", "thing", "things", "one",
+    "important", "essential", "priority", "now", "actually", "really", "definitely", "specifically", "basically", "care",
+    "about", "mainly", "particularly", "especially", "looking", "look", "seeking", "searching", "hunt", "after", "focus",
+    "focused", "criteria", "criterion", "point", "note", "detail", "details", "hey", "there", "please", "thanks", "again",
+    "still", "also", "just", "then", "like", "love", "would", "should", "sure", "yes", "yeah", "hmm", "um", "uh", "and",
+}
+LEADIN_VERB = re.compile(r"^(?:needs?|wants?|prefer(?:s|ably)?|ideally|must have|looking for|seeking|requires?|require[sd]?|"
+                         r"key requirement(?: is)?|requirement(?: is)?|priority(?: is)?|what i need is|i need|i want)\b[\s:,-]*", re.I)
+
+
+def peel_leadin(clause: str) -> str:
+    """Strip request wrappers from a clause so the catalog attribute string stays verbatim:
+    'Oh, for that one, what matters is: Imported' → 'Imported'; 'Needs 5% spandex' → '5% spandex';
+    'Solid colors: 100% Cotton' and 'Material:alloy' are untouched (left side is not lead-in vocabulary)."""
+    c = clause.strip(" ,:;-—–\"'")
+    if ": " in c:
+        left, right = c.rsplit(": ", 1)
+        ltoks = TOKEN_RE.findall(left.lower())
+        if ltoks and all(t in LEADIN for t in ltoks) and right.strip():
+            c = right.strip()
+    c2 = LEADIN_VERB.sub("", c, count=1).strip(" ,:;-—–\"'")
+    return c2 if c2 else c
 
 
 @dataclass
@@ -198,7 +227,7 @@ def extract_clause(msg: str, turn: int, cm: CategoryMatcher) -> Parsed:
     if turn == 1:
         cats, prov = cm.match(msg)
         for c in cats:
-            text = re.sub(r"\s+".join(re.escape(t) for t in TOKEN_RE.findall(c.lower())), " ", text, flags=re.I)
+            text = re.sub(r"[^a-z0-9]+".join(re.escape(t) for t in TOKEN_RE.findall(c.lower())), " ", text, flags=re.I)  # '&', '-' inside categories
     low = text.lower()
     if turn > 1 and re.search(r"preference|judgment|flexible|doesn'?t matter|not fussy|your call|nothing specific", low):
         a = ATTR_WORD.search(text)
@@ -208,7 +237,7 @@ def extract_clause(msg: str, turn: int, cm: CategoryMatcher) -> Parsed:
         return Parsed("noinfo", cats, prov, [], None, template=False)
     cons = []
     for clause in re.split(r"\.\s|\.$|;\s|[!?\n]|\s[—–-]\s", BOILERPLATE.sub(" ", text)):
-        c = clause.strip(" ,:-—–\"'")
+        c = peel_leadin(clause)
         if len(c) < 3 or not TOKEN_RE.search(c.lower()) or all(t in STOP for t in TOKEN_RE.findall(c.lower())):
             continue
         cons.append((c, "clause"))

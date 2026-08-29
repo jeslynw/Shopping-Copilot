@@ -73,3 +73,25 @@ def test_quote_bearing_constraints_tokenize_safely(agent, cards):
     for c in quoted:
         assert all(t.isalnum() for t in tokens(c))
         agent.catalog.search(tokens(c), 5)   # must not raise
+
+
+def test_peel_leadin_keeps_catalog_strings_intact():
+    from copilot.extract import peel_leadin
+    assert peel_leadin("Oh, for that one, what matters is: Imported") == "Imported"
+    assert peel_leadin("So,  : cotton blend") == "cotton blend"
+    assert peel_leadin("Key requirement is: spandex") == "spandex"
+    assert peel_leadin("Need: Made in the USA") == "Made in the USA"
+    assert peel_leadin("Needs 5% spandex") == "5% spandex"
+    assert peel_leadin("Solid colors: 100% Cotton") == "Solid colors: 100% Cotton"
+    assert peel_leadin("Material:alloy") == "Material:alloy"
+    assert peel_leadin("Shaft measures approximately 8.37\" from arch") == "Shaft measures approximately 8.37\" from arch"
+
+
+def test_clause_extractor_on_fixture_style_paraphrases(agent):
+    cm = agent.catalog.matcher
+    p = extract("Hey there! I'm on the hunt for some Tees & Blouses T-Shirts, and a key requirement is: cotton. I just love how comfy cotton feels, don't you?", 1, "hybrid", cm)
+    assert "Tees & Blouses T-Shirts" in p.categories and ("cotton", "clause") in p.constraints
+    q = extract("Oh, for that one, what matters is: Imported; Pull On closure. Just thought I'd share in case it helps.", 2, "hybrid", cm)
+    assert [c for c, _ in q.constraints][:2] == ["Imported", "Pull On closure"]
+    r = extract("Need: Made in the USA; Pull On closure.", 2, "hybrid", cm)
+    assert [c for c, _ in r.constraints] == ["Made in the USA", "Pull On closure"]
