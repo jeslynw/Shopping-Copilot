@@ -1,0 +1,18 @@
+{
+  "date": "2026-08-29",
+  "provider": "openai",
+  "models": {"extract": "gpt-4.1-mini", "polish": "gpt-4.1-mini"},
+  "probe_sequential_20_calls": {
+    "extract_ms": {"p50": 1059, "p95": 2019, "max": 2019},
+    "polish_ms": {"p50": 1458, "p95": 1534, "max": 1534},
+    "failures": 0, "prompt_tokens": 5280, "completion_tokens": 819
+  },
+  "invariance_40_sessions_polish_on": {
+    "turns": 83, "identical_ask_and_recommendations": 83, "sessions_identical": true,
+    "technical_score_offline": 0.9673, "technical_score_llm_on": 0.9673,
+    "messages_polished": 83, "turn_latency_ms": {"p50": 1660, "p95": 2187, "max": 2876, "offline_p50": 35},
+    "wall_s": 142, "prompt_tokens": 18942, "completion_tokens": 5950,
+    "cost_usd_list_price": {"per_40_sessions": 0.017, "per_200_sessions": 0.09, "per_800_sessions": 0.34}
+  },
+  "notes": "Polish never changes ask_attribute/recommendations by construction; extraction fires only when no simulator template matched (0 times on clean public data)."
+}

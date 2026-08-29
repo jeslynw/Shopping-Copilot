@@ -517,7 +517,7 @@ model has information to break them; exact matching beats every fuzzier variant)
 **LLM uses in the scored path (each a `Config` flag, `copilot/llm.py`):**
 | use | when it fires | grounding | default |
 |---|---|---|---|
-| `llm_extract` | only when no simulator template matched the message (organizer paraphrasing) | constraints must be verbatim substrings of the message; category must be one of the offered vocab candidates; provenance `llm` → cutoff gate releases to a full shelf | on |
+| `llm_extract` | only when no simulator template matched the message (organizer paraphrasing) | constraints must be verbatim substrings of the message; category must be one of the offered vocab candidates; provenance `llm` → cutoff gate releases to a full shelf | **off** — measured 29 Aug on the gpt-4.1-mini paraphrase fixture: 0.918 vs 0.924 for the deterministic clause extractor (after lead-in peeling); no gain, +1 s/turn → ablation row |
 | `llm_polish` | every turn | output assigned to `message` only; URLs and store names stripped | on |
 | `llm_rerank` | ablation: orders the top tier | only offered asins accepted, missing appended | **off** — measure, report, ship only if Δ ≥ +0.02 |
 
@@ -540,3 +540,9 @@ its value shows only under paraphrase — which is why the fixture (below) comes
 `test_offline_flags_do_not_change_results`. New R15: API latency/429s in an 800-session run → budget + breaker + failure
 budget; a run with the breaker open is still a valid 0.958 run. New R16: key handling — never committed; `.env.example`
 documents it; the organizer's environment is assumed to carry it.
+
+**Measured 29 Aug (fixture `data/paraphrases.jsonl`, 1,910 LLM paraphrases, dev harness):** clean 0.958 · paraphrased with the
+deterministic clause extractor 0.899 → **0.924** after two fixes the diagnosis exposed (lead-ins glued to constraints, category
+removal failing on '&'/'-' categories) · paraphrased with LLM extraction (gpt-4.1-mini, grounded) **0.918**, 325 calls, p50 1.0 s.
+Decision: `llm_extract` off by default (ablation row); `llm_polish` on (invariance verified live: 83/83 turns identical ask/recs;
+≈ $0.09 and +1.6 s/turn per 200-session run). Robustness to paraphrase is delivered deterministically.

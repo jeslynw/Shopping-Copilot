@@ -34,7 +34,10 @@ class Config:                         # shipped defaults; every §3 layer is a f
     blend_w: float = 0.0
     cutoff: str = "gated"             # none | R6 | gated | top1 (reference rows)
     exclusion: str = "prev_turn"      # none | prev_turn | turn5 | naive (reference row)
-    llm: bool = False                 # from env COPILOT_LLM=1; COPILOT_OFFLINE=1 forces False
+    llm: bool = False                 # on iff an API key is present (OPENAI_API_KEY / ANTHROPIC_API_KEY, .env read); COPILOT_LLM=1/0, COPILOT_OFFLINE=1
+    llm_extract: bool = False         # grounded extraction fallback — ablation flag (measured 0.918 vs deterministic 0.924 on the fixture)
+    llm_polish: bool = True           # rewrite `message` only
+    llm_rerank: bool = False          # ablation flag
 ```
 
 ## `copilot/state.py`

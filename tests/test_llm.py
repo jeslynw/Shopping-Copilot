@@ -28,7 +28,7 @@ class FakeClient:
                                usage=SimpleNamespace(input_tokens=120, output_tokens=30))
 
 
-CFG = Config(llm=True)
+CFG = Config(llm=True, llm_extract=True)   # extraction is an ablation flag (off by default) — tests exercise it explicitly
 
 
 def test_extract_keeps_only_grounded_spans_and_offered_categories():
@@ -86,6 +86,17 @@ def test_rerank_is_grounded_to_offered_ids():
     assert llm.rerank(items, ["x"], "Cat") == ["B", "A", "C"]
 
 
+def test_llm_extract_is_off_by_default(agent, monkeypatch):
+    monkeypatch.setenv("COPILOT_LLM_PROVIDER", "anthropic")
+    from copilot.agent import Agent
+    fake = FakeClient(["POLISHED"] * 5)
+    on = Agent(CATALOG, replace(agent.cfg, llm=True), llm_client=fake)
+    on.reset("d", PROFILE)
+    on.respond("d", "hey, browsing basketball men stuff — needs a Drawstring closure pls", 1, 10)
+    assert len(fake.calls) == 1 and "draft" in fake.calls[0]["messages"][0]["content"]     # polish only, no extraction call
+    assert on.sessions["d"].constraints and on.sessions["d"].constraints[0].provenance == "clause"
+
+
 def test_agent_invariance_with_polish_on(agent, monkeypatch):
     monkeypatch.setenv("COPILOT_LLM_PROVIDER", "anthropic")
     from copilot.agent import Agent
@@ -109,7 +120,7 @@ def test_agent_uses_llm_extraction_only_when_templates_fail(agent, monkeypatch):
     from copilot.agent import Agent
     fake = FakeClient([{"category": "Basketball Men", "constraints": ["Drawstring closure"], "kind": "open_buying", "attribute": None},
                        "POLISHED"])
-    on = Agent(CATALOG, replace(agent.cfg, llm=True), llm_client=fake)
+    on = Agent(CATALOG, replace(agent.cfg, llm=True, llm_extract=True), llm_client=fake)
     on.reset("p", PROFILE)
     r = on.respond("p", "hey, browsing basketball men stuff — needs a Drawstring closure pls", 1, 10)
     st = on.sessions["p"]
