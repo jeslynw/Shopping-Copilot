@@ -1,0 +1,1002 @@
+{
+ "experiment": "exp_05_popularity",
+ "rows": [
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.771085,
+   "mttc": 1.74,
+   "efficiency": 0.926,
+   "recommended_technical_score": 0.916525,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.756577,
+     "mttc": 1.1625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "pop tie-break, lexicographic (-nmatch, -catmatch, -rating_number)",
+   "config": {
+    "label": "pop tie-break, lexicographic (-nmatch, -catmatch, -rating_number)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.1,
+   "p95_ms": 54.5,
+   "wall_s": 9.1,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 115,
+    "2": 43,
+    "3": 23,
+    "4": 18,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 132,
+    "2": 23,
+    "3": 14,
+    "4": 13,
+    "5": 5,
+    "6": 3,
+    "7": 5,
+    "8": 3,
+    "9": 1,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.99,
+   "mrr": 0.654079,
+   "mttc": 1.975,
+   "efficiency": 0.9025,
+   "recommended_technical_score": 0.871724,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.471111,
+     "mttc": 2.8
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.611696,
+     "mttc": 1.7125
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.64125,
+     "mttc": 1.425
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.862302,
+     "mttc": 3.866667
+    }
+   },
+   "label": "blend bm25 \u2212 0.5\u00b7log1p(pop)",
+   "config": {
+    "label": "blend bm25 \u2212 0.5\u00b7log1p(pop)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "blend",
+    "blend_w": 0.5,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.1,
+   "p95_ms": 52.9,
+   "wall_s": 10.4,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 96,
+    "2": 49,
+    "3": 35,
+    "4": 16,
+    "5": 2
+   },
+   "rank_at_hit": {
+    "1": 104,
+    "2": 28,
+    "3": 10,
+    "4": 13,
+    "5": 9,
+    "6": 5,
+    "7": 11,
+    "8": 6,
+    "9": 7,
+    "10": 5
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.99,
+   "mrr": 0.730419,
+   "mttc": 1.86,
+   "efficiency": 0.914,
+   "recommended_technical_score": 0.896926,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.697619,
+     "mttc": 2.8
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.684911,
+     "mttc": 1.5875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.723204,
+     "mttc": 1.275
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.881944,
+     "mttc": 3.833333
+    }
+   },
+   "label": "blend bm25 \u2212 1.0\u00b7log1p(pop)",
+   "config": {
+    "label": "blend bm25 \u2212 1.0\u00b7log1p(pop)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "blend",
+    "blend_w": 1.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.0,
+   "p95_ms": 53.2,
+   "wall_s": 9.8,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 108,
+    "2": 45,
+    "3": 28,
+    "4": 17
+   },
+   "rank_at_hit": {
+    "1": 119,
+    "2": 33,
+    "3": 16,
+    "4": 7,
+    "5": 6,
+    "6": 3,
+    "7": 5,
+    "8": 7,
+    "9": 1,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.99,
+   "mrr": 0.735177,
+   "mttc": 1.8,
+   "efficiency": 0.92,
+   "recommended_technical_score": 0.899553,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.7,
+     "mttc": 2.8
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.68621,
+     "mttc": 1.5375
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724231,
+     "mttc": 1.175
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.906667,
+     "mttc": 3.833333
+    }
+   },
+   "label": "blend bm25 \u2212 2.0\u00b7log1p(pop)",
+   "config": {
+    "label": "blend bm25 \u2212 2.0\u00b7log1p(pop)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "blend",
+    "blend_w": 2.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.2,
+   "p95_ms": 53.5,
+   "wall_s": 9.5,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 115,
+    "2": 43,
+    "3": 23,
+    "4": 17
+   },
+   "rank_at_hit": {
+    "1": 120,
+    "2": 35,
+    "3": 11,
+    "4": 9,
+    "5": 6,
+    "6": 6,
+    "7": 4,
+    "8": 5,
+    "9": 2
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.99,
+   "mrr": 0.767327,
+   "mttc": 1.805,
+   "efficiency": 0.9195,
+   "recommended_technical_score": 0.909098,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.766667,
+     "mttc": 2.8
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.726086,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.752649,
+     "mttc": 1.175
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.916667,
+     "mttc": 3.833333
+    }
+   },
+   "label": "blend bm25 \u2212 4.0\u00b7log1p(pop)",
+   "config": {
+    "label": "blend bm25 \u2212 4.0\u00b7log1p(pop)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "blend",
+    "blend_w": 4.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.1,
+   "p95_ms": 53.1,
+   "wall_s": 9.5,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 115,
+    "2": 42,
+    "3": 24,
+    "4": 17
+   },
+   "rank_at_hit": {
+    "1": 129,
+    "2": 32,
+    "3": 9,
+    "4": 9,
+    "5": 7,
+    "6": 5,
+    "7": 6,
+    "8": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.995,
+   "mrr": 0.715579,
+   "mttc": 1.65,
+   "efficiency": 0.935,
+   "recommended_technical_score": 0.899174,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.576944,
+     "mttc": 2.4
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.649891,
+     "mttc": 1.325
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.715154,
+     "mttc": 1.15
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "pop tie-break, pool 1000",
+   "config": {
+    "label": "pop tie-break, pool 1000",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 1000,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.5,
+   "p95_ms": 55.7,
+   "wall_s": 9.2,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 136,
+    "2": 24,
+    "3": 21,
+    "4": 18
+   },
+   "rank_at_hit": {
+    "1": 116,
+    "2": 29,
+    "3": 18,
+    "4": 12,
+    "5": 5,
+    "6": 6,
+    "7": 4,
+    "8": 4,
+    "9": 4,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.72,
+   "mrr": 0.361885,
+   "mttc": 4.265,
+   "efficiency": 0.6735,
+   "recommended_technical_score": 0.603266,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.7,
+     "mrr": 0.302778,
+     "mttc": 4.4
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.7,
+     "mrr": 0.354613,
+     "mttc": 4.2375
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.7125,
+     "mrr": 0.372827,
+     "mttc": 3.975
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.8,
+     "mrr": 0.371799,
+     "mttc": 5.066667
+    }
+   },
+   "label": "PARAPHRASED, template extractor + pop",
+   "config": {
+    "label": "PARAPHRASED, template extractor + pop",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": true,
+   "p50_ms": 32.4,
+   "p95_ms": 56.8,
+   "wall_s": 25.9,
+   "agent_exceptions": 0,
+   "override_hr": 0.8,
+   "hit_turns": {
+    "1": 93,
+    "2": 23,
+    "3": 14,
+    "4": 14
+   },
+   "rank_at_hit": {
+    "1": 44,
+    "2": 24,
+    "3": 15,
+    "4": 17,
+    "5": 18,
+    "6": 8,
+    "7": 4,
+    "8": 8,
+    "9": 2,
+    "10": 4
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.99,
+   "mrr": 0.760994,
+   "mttc": 1.82,
+   "efficiency": 0.918,
+   "recommended_technical_score": 0.906898,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.66,
+     "mttc": 3.1
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724955,
+     "mttc": 1.5
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9875,
+     "mrr": 0.749494,
+     "mttc": 1.3125
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.921429,
+     "mttc": 3.6
+    }
+   },
+   "label": "PARAPHRASED, hybrid extractor (template\u2192clause fallback) + pop",
+   "config": {
+    "label": "PARAPHRASED, hybrid extractor (template\u2192clause fallback) + pop",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": true,
+   "p50_ms": 42.5,
+   "p95_ms": 69.8,
+   "wall_s": 15.6,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 116,
+    "2": 41,
+    "3": 21,
+    "4": 19,
+    "5": 1
+   },
+   "rank_at_hit": {
+    "1": 129,
+    "2": 27,
+    "3": 11,
+    "4": 12,
+    "5": 6,
+    "6": 3,
+    "7": 6,
+    "8": 3,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.771085,
+   "mttc": 1.74,
+   "efficiency": 0.926,
+   "recommended_technical_score": 0.916525,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.756577,
+     "mttc": 1.1625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "clean, hybrid extractor + pop",
+   "config": {
+    "label": "clean, hybrid extractor + pop",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "hybrid",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.5,
+   "p95_ms": 55.1,
+   "wall_s": 9.3,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 115,
+    "2": 43,
+    "3": 23,
+    "4": 18,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 132,
+    "2": 23,
+    "3": 14,
+    "4": 13,
+    "5": 5,
+    "6": 3,
+    "7": 5,
+    "8": 3,
+    "9": 1,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.975,
+   "mrr": 0.643284,
+   "mttc": 2.585,
+   "efficiency": 0.8415,
+   "recommended_technical_score": 0.848785,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.596667,
+     "mttc": 3.9
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9875,
+     "mrr": 0.616205,
+     "mttc": 2.3875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.975,
+     "mrr": 0.610218,
+     "mttc": 2.1
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.819206,
+     "mttc": 3.966667
+    }
+   },
+   "label": "no popularity (V6 control)",
+   "config": {
+    "label": "no popularity (V6 control)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.8,
+   "p95_ms": 53.5,
+   "wall_s": 14.6,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 34,
+    "2": 82,
+    "3": 54,
+    "4": 24,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 102,
+    "2": 25,
+    "3": 15,
+    "4": 12,
+    "5": 8,
+    "6": 11,
+    "7": 8,
+    "8": 5,
+    "9": 5,
+    "10": 4
+   }
+  }
+ ],
+ "notes": {
+  "in_top10_of_category": 163,
+  "in_top50": 190,
+  "rank1": 70,
+  "global_top1000": 142
+ }
+}

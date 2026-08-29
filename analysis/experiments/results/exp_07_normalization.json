@@ -1,0 +1,311 @@
+{
+ "experiment": "exp_07_normalization",
+ "rows": [
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.771085,
+   "mttc": 1.74,
+   "efficiency": 0.926,
+   "recommended_technical_score": 0.916525,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.756577,
+     "mttc": 1.1625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "POP control (lower-only matcher, three fields)",
+   "config": {
+    "label": "POP control (lower-only matcher, three fields)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.1,
+   "p95_ms": 54.1,
+   "wall_s": 9.1,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 115,
+    "2": 43,
+    "3": 23,
+    "4": 18,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 132,
+    "2": 23,
+    "3": 14,
+    "4": 13,
+    "5": 5,
+    "6": 3,
+    "7": 5,
+    "8": 3,
+    "9": 1,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.771085,
+   "mttc": 1.74,
+   "efficiency": 0.926,
+   "recommended_technical_score": 0.916525,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.756577,
+     "mttc": 1.1625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "+ norm() matcher, three fields",
+   "config": {
+    "label": "+ norm() matcher, three fields",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "three",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 26.8,
+   "p95_ms": 54.8,
+   "wall_s": 9.1,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 115,
+    "2": 43,
+    "3": 23,
+    "4": 18,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 132,
+    "2": 23,
+    "3": 14,
+    "4": 13,
+    "5": 5,
+    "6": 3,
+    "7": 5,
+    "8": 3,
+    "9": 1,
+    "10": 1
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 1.0,
+   "mrr": 0.77051,
+   "mttc": 1.735,
+   "efficiency": 0.9265,
+   "recommended_technical_score": 0.916453,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.761111,
+     "mttc": 2.3
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.724211,
+     "mttc": 1.55
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.755139,
+     "mttc": 1.15
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 1.0,
+     "mrr": 0.938095,
+     "mttc": 3.6
+    }
+   },
+   "label": "+ norm() six-field matcher",
+   "config": {
+    "label": "+ norm() six-field matcher",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": true,
+    "match_fields": "six",
+    "tiebreak": "popularity",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.0,
+   "p95_ms": 54.4,
+   "wall_s": 9.1,
+   "agent_exceptions": 0,
+   "override_hr": 1.0,
+   "hit_turns": {
+    "1": 116,
+    "2": 42,
+    "3": 23,
+    "4": 18,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 132,
+    "2": 23,
+    "3": 13,
+    "4": 14,
+    "5": 5,
+    "6": 3,
+    "7": 4,
+    "8": 3,
+    "9": 2,
+    "10": 1
+   }
+  }
+ ],
+ "notes": {
+  "same_tier_more_popular": [
+   68,
+   68
+  ]
+ }
+}

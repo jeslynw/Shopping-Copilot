@@ -1,0 +1,13 @@
+data/catalog.jsonl
+data/catalog.jsonl.gz
+.venv/
+results.json
+.env
+__pycache__/
+.pytest_cache/
+analysis/*.jsonl
+analysis/local_evaluator.py
+analysis/__pycache__/
+.DS_Store
+analysis/experiments/results/*.log
+analysis/experiments/results/run_all.out
