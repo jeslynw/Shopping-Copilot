@@ -58,7 +58,8 @@ AGENT=baseline python3 -m evaluator.local_evaluator   # kit baseline → Technic
 python3 tools/run_eval.py --profile                   # team agent + latency / memory / contract checks
 ```
 
-Claude layer (optional, on when a key is present): `export ANTHROPIC_API_KEY=…` and run the same command — the agent
+LLM layer (optional, on when a key is present): put `OPENAI_API_KEY=…` (or `ANTHROPIC_API_KEY=…`) in a git-ignored `.env`
+at the repo root — or export it — and run the same command; the agent
 adds grounded constraint extraction when a customer message doesn't match the simulator's templates, and rewrites the
 customer-facing message; `ask_attribute` and `recommendations` are unaffected by design. `COPILOT_LLM=0` or
 `COPILOT_OFFLINE=1` switches it off; token usage appears in `reported_token_usage`. Paraphrase robustness:

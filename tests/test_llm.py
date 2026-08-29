@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from copilot.config import Config, llm_enabled_from_env
+from copilot.config import Config, llm_enabled_from_env, llm_provider_from_env, load_dotenv
 from copilot.llm import LLM
 from tests.conftest import CATALOG, PROFILE
 
@@ -115,10 +115,49 @@ def test_agent_with_failing_llm_matches_offline(agent):
     assert bad.internal_exceptions == 0
 
 
+class FakeOpenAIClient:
+    def __init__(self, responses=()):
+        self.responses, self.calls = list(responses), []
+        self.chat = SimpleNamespace(completions=SimpleNamespace(create=self._create))
+
+    def _create(self, **kwargs):
+        self.calls.append(kwargs)
+        r = self.responses.pop(0) if self.responses else ""
+        text = json.dumps(r) if isinstance(r, dict) else str(r)
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=text))],
+                               usage=SimpleNamespace(prompt_tokens=80, completion_tokens=20))
+
+
+def test_openai_provider_extract_and_polish():
+    fake = FakeOpenAIClient([{"category": "Jewelry Necklaces", "constraints": ["Material:alloy", "made up"], "kind": "open_buying",
+                              "attribute": None}, "Polished text."])
+    llm = LLM(CFG, client=fake, provider="openai")
+    assert llm.extract_model == "gpt-4.1-mini"
+    llm.begin_turn()
+    p = llm.extract("Hi! I need jewelry necklaces. It must have: Material:alloy.", 1, ["Jewelry Necklaces"])
+    assert p.constraints == [("Material:alloy", "llm")] and p.categories == ("Jewelry Necklaces",)
+    assert fake.calls[0]["response_format"]["json_schema"]["strict"] is True and "max_completion_tokens" in fake.calls[0]
+    assert llm.polish("draft", {}) == "Polished text." and llm.turn_usage == (160, 40)
+
+
+def test_dotenv_loader_sets_missing_only(tmp_path, monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False); monkeypatch.setenv("COPILOT_KEEP", "orig")
+    env = tmp_path / ".env"; env.write_text("# comment\nOPENAI_API_KEY=sk-file  # trailing\nCOPILOT_KEEP=changed\nEMPTY=\n")
+    load_dotenv(env)
+    assert os.environ["OPENAI_API_KEY"] == "sk-file" and os.environ["COPILOT_KEEP"] == "orig" and "EMPTY" not in os.environ
+
+
 def test_env_switch(monkeypatch):
-    monkeypatch.delenv("COPILOT_LLM", raising=False); monkeypatch.delenv("COPILOT_OFFLINE", raising=False)
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
-    assert llm_enabled_from_env() is True
+    for v in ("COPILOT_LLM", "COPILOT_OFFLINE", "COPILOT_LLM_PROVIDER", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
+        monkeypatch.delenv(v, raising=False)
+    monkeypatch.setattr("copilot.config.load_dotenv", lambda path=None: None)
+    assert llm_provider_from_env() is None and llm_enabled_from_env() is False
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    assert llm_provider_from_env() == "openai" and llm_enabled_from_env() is True
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant"); assert llm_provider_from_env() == "openai"
+    monkeypatch.setenv("COPILOT_LLM_PROVIDER", "anthropic"); assert llm_provider_from_env() == "anthropic"
+    monkeypatch.delenv("COPILOT_LLM_PROVIDER"); monkeypatch.delenv("OPENAI_API_KEY")
+    assert llm_provider_from_env() == "anthropic" and llm_enabled_from_env() is True
     monkeypatch.setenv("COPILOT_LLM", "0"); assert llm_enabled_from_env() is False
     monkeypatch.delenv("COPILOT_LLM"); monkeypatch.setenv("COPILOT_OFFLINE", "1"); assert llm_enabled_from_env() is False
     monkeypatch.delenv("COPILOT_OFFLINE"); monkeypatch.setenv("ANTHROPIC_API_KEY", ""); assert llm_enabled_from_env() is False

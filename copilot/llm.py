@@ -1,4 +1,4 @@
-"""Claude layer — on whenever an API key is present (docs/PLAN.md §11). Three uses, all fail-safe and grounded:
+"""LLM layer — OpenAI or Anthropic, on whenever an API key is present (docs/PLAN.md §11). Three uses, all fail-safe and grounded:
 
   extract(...)  — when no simulator template matched (organizer paraphrasing), return the customer's constraints as
                   VERBATIM spans of the message plus a category chosen from offered candidates; anything not grounded
@@ -18,7 +18,7 @@ import time
 from collections import deque
 from typing import Optional
 
-from .config import Config
+from .config import Config, llm_provider_from_env
 from .extract import ATTR_WORD, Parsed, STOP, TOKEN_RE, norm
 
 URL_RE = re.compile(r"https?://\S+|www\.\S+", re.I)
@@ -59,13 +59,21 @@ RERANK_SCHEMA = {"type": "object", "properties": {"order": {"type": "array", "it
                  "required": ["order"], "additionalProperties": False}
 
 
+DEFAULT_MODELS = {
+    "openai": {"extract": "gpt-4.1-mini", "polish": "gpt-4.1-mini"},
+    "anthropic": {"extract": "claude-haiku-4-5", "polish": "claude-sonnet-5"},
+}
+
+
 class LLM:
-    def __init__(self, cfg: Config, client=None):
+    def __init__(self, cfg: Config, client=None, provider: Optional[str] = None):
         self.cfg = cfg
+        self.provider = provider or llm_provider_from_env() or "anthropic"
         self.enabled = bool(cfg.llm) and os.environ.get("COPILOT_OFFLINE") != "1" and (
             cfg.llm_extract or cfg.llm_polish or cfg.llm_rerank)
-        self.extract_model = os.environ.get("COPILOT_LLM_EXTRACT_MODEL", "claude-haiku-4-5")
-        self.polish_model = os.environ.get("COPILOT_LLM_MODEL", "claude-sonnet-5")
+        defaults = DEFAULT_MODELS.get(self.provider, DEFAULT_MODELS["anthropic"])
+        self.extract_model = os.environ.get("COPILOT_LLM_EXTRACT_MODEL") or defaults["extract"]
+        self.polish_model = os.environ.get("COPILOT_LLM_MODEL") or defaults["polish"]
         self.budget_s = float(cfg.llm_budget_s)
         self._client = client
         self.calls = 0
@@ -87,10 +95,47 @@ class LLM:
         return self.budget_s - (time.perf_counter() - self._turn_t0)
 
     def _client_or_none(self):
-        if self._client is None:
-            import anthropic  # lazy: only when the layer is on
-            self._client = anthropic.Anthropic(max_retries=0)
+        if self._client is None:                       # lazy: only when the layer is on
+            if self.provider == "openai":
+                import openai
+                self._client = openai.OpenAI(max_retries=0)
+            else:
+                import anthropic
+                self._client = anthropic.Anthropic(max_retries=0)
         return self._client
+
+    def _request(self, client, model, system, user, schema, max_tokens, remaining):
+        """Provider-specific call → (text, (prompt_tokens, completion_tokens)). Retries once without optional params."""
+        if self.provider == "openai":
+            kwargs = dict(model=model, max_completion_tokens=max_tokens, timeout=remaining,
+                          messages=[{"role": "system", "content": system}, {"role": "user", "content": user}])
+            if schema:
+                kwargs["response_format"] = {"type": "json_schema", "json_schema": {"name": "out", "schema": schema, "strict": True}}
+            try:
+                resp = client.chat.completions.create(**kwargs)
+            except Exception:
+                kwargs.pop("response_format", None)
+                kwargs["timeout"] = max(0.3, self._remaining())
+                resp = client.chat.completions.create(**kwargs)
+            text = (resp.choices[0].message.content or "") if getattr(resp, "choices", None) else ""
+            u = getattr(resp, "usage", None)
+            used = (int(getattr(u, "prompt_tokens", 0) or 0), int(getattr(u, "completion_tokens", 0) or 0))
+            return text.strip(), used
+        kwargs = dict(model=model, max_tokens=max_tokens, system=system, thinking={"type": "disabled"},
+                      messages=[{"role": "user", "content": user}], timeout=remaining)
+        if schema:
+            kwargs["output_config"] = {"format": {"type": "json_schema", "schema": schema}}
+        try:
+            resp = client.messages.create(**kwargs)
+        except Exception:
+            for k in ("output_config", "thinking"):
+                kwargs.pop(k, None)
+            kwargs["timeout"] = max(0.3, self._remaining())
+            resp = client.messages.create(**kwargs)
+        u = getattr(resp, "usage", None)
+        used = (int(getattr(u, "input_tokens", 0) or 0), int(getattr(u, "output_tokens", 0) or 0))
+        text = "".join(getattr(b, "text", "") for b in getattr(resp, "content", []) if getattr(b, "type", "") == "text")
+        return text.strip(), used
 
     def _fail(self) -> None:
         self.failures += 1
@@ -110,25 +155,11 @@ class LLM:
         self.calls += 1
         try:
             client = self._client_or_none()
-            kwargs = dict(model=model, max_tokens=max_tokens, system=system, thinking={"type": "disabled"},
-                          messages=[{"role": "user", "content": user}], timeout=remaining)
-            if schema:
-                kwargs["output_config"] = {"format": {"type": "json_schema", "schema": schema}}
-            try:
-                resp = client.messages.create(**kwargs)
-            except Exception:
-                # optional params may be unsupported by this model/SDK → retry once plain, still inside the budget
-                for k in ("output_config", "thinking"):
-                    kwargs.pop(k, None)
-                kwargs["timeout"] = max(0.3, self._remaining())
-                resp = client.messages.create(**kwargs)
+            text, used = self._request(client, model, system, user, schema, max_tokens, remaining)
             elapsed = time.perf_counter() - t0
             self.latencies.append(elapsed * 1000)
-            u = getattr(resp, "usage", None)
-            used = (int(getattr(u, "input_tokens", 0) or 0), int(getattr(u, "output_tokens", 0) or 0))
             self.turn_usage = (self.turn_usage[0] + used[0], self.turn_usage[1] + used[1])
             self.total_usage = (self.total_usage[0] + used[0], self.total_usage[1] + used[1])
-            text = "".join(getattr(b, "text", "") for b in getattr(resp, "content", []) if getattr(b, "type", "") == "text").strip()
             if not text or elapsed > remaining:
                 self._fail()
                 return None
@@ -205,7 +236,7 @@ class LLM:
 
     def summary(self) -> dict:
         lat = sorted(self.latencies)
-        return {"enabled": self.enabled, "extract_model": self.extract_model, "polish_model": self.polish_model,
+        return {"enabled": self.enabled, "provider": self.provider, "extract_model": self.extract_model, "polish_model": self.polish_model,
                 "calls": self.calls, "failures": self.failures, "budget_skips": self.budget_skips,
                 "p50_ms": round(lat[len(lat) // 2], 1) if lat else 0, "p95_ms": round(lat[int(len(lat) * 0.95) - 1], 1) if len(lat) >= 20 else (round(lat[-1], 1) if lat else 0),
                 "prompt_tokens": self.total_usage[0], "completion_tokens": self.total_usage[1], "breaker_open": self.breaker_open}

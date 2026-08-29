@@ -509,7 +509,7 @@ Then P1 starts from the §3 experiment code (the in-memory scripts from this pla
 
 **What changed.** The team has confirmed internet access and external LLM APIs are usable. This revision re-scopes the
 Claude layer from "opt-in demo polish" (§5) to a first-class, **auto-enabled** layer whenever `ANTHROPIC_API_KEY` is set.
-It does **not** move the LLM into ranking by default — every measurement in §3/§7b that argued against that still stands
+Provider: OpenAI (`OPENAI_API_KEY`, defaults `gpt-4.1-mini`) or Anthropic (`ANTHROPIC_API_KEY`), selected by whichever key is present; a git-ignored `.env` at the repo root is read automatically. It does **not** move the LLM into ranking by default — every measurement in §3/§7b that argued against that still stands
 (one hallucinated constraint per session −0.066; ties are between bestsellers that satisfy identical constraints, so no
 model has information to break them; exact matching beats every fuzzier variant). The rules still say the organizer
 "may disable network", so the deterministic core remains the guaranteed path and every LLM call is fail-safe.

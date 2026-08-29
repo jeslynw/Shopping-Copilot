@@ -1,4 +1,7 @@
-"""Dev-time, run once: paraphrase every simulator string of the public set with Claude via the Message Batches API.
+"""Dev-time, run once: paraphrase every simulator string of the public set with an LLM (OpenAI or Anthropic).
+
+Provider from OPENAI_API_KEY / ANTHROPIC_API_KEY (or COPILOT_LLM_PROVIDER; .env is read). OpenAI → direct calls with a
+thread pool; Anthropic → Message Batches API.
 
     python tools/gen_paraphrases.py --dry-run                # count strings / requests, no API call
     python tools/gen_paraphrases.py --styles 4               # ~4k requests, Haiku, a few minutes, ~$1–2
@@ -19,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from evaluator import local_evaluator as ev  # noqa: E402
-from copilot.config import ATTRS  # noqa: E402
+from copilot.config import ATTRS, llm_provider_from_env  # noqa: E402
 
 OUT = ROOT / "data" / "paraphrases.jsonl"
 STYLES = {
@@ -67,7 +70,8 @@ def simulator_strings(samples, products, categories) -> dict[str, list[str]]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--styles", type=int, default=4)
-    ap.add_argument("--model", default="claude-haiku-4-5")
+    ap.add_argument("--model", default="", help="default: gpt-4.1-mini (openai) / claude-haiku-4-5 (anthropic)")
+    ap.add_argument("--workers", type=int, default=8, help="openai: concurrent requests")
     ap.add_argument("--limit", type=int, default=0, help="only the first N strings (smoke test)")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--resume", default="", help="batch id to fetch instead of creating")
@@ -80,33 +84,62 @@ def main() -> int:
     print(f"{len(strings)} distinct simulator strings → {len(keys) * len(styles)} requests ({len(keys)} × {styles})", file=sys.stderr)
     if args.dry_run:
         return 0
-    import anthropic
-    client = anthropic.Anthropic()
-    if args.resume:
-        batch = client.messages.batches.retrieve(args.resume)
+    provider = llm_provider_from_env()
+    if provider is None:
+        print("no API key found (OPENAI_API_KEY / ANTHROPIC_API_KEY, or .env)", file=sys.stderr)
+        return 2
+    model = args.model or ("gpt-4.1-mini" if provider == "openai" else "claude-haiku-4-5")
+    jobs = [(i, st, text) for i, text in enumerate(keys) for st in styles]
+    results: dict[tuple, str] = {}       # (i, style) → paraphrase text ("" on error)
+    if provider == "openai":
+        import openai
+        from concurrent.futures import ThreadPoolExecutor
+        client = openai.OpenAI(max_retries=2)
+
+        def one(job):
+            i, st, text = job
+            try:
+                r = client.chat.completions.create(model=model, max_completion_tokens=300, messages=[
+                    {"role": "system", "content": SYSTEM},
+                    {"role": "user", "content": f"Voice: {STYLES[st]}.\n<message>\n{text}\n</message>"}])
+                return (i, st), (r.choices[0].message.content or "").strip()
+            except Exception as e:
+                return (i, st), ""
+        done = 0
+        with ThreadPoolExecutor(max_workers=args.workers) as ex:
+            for key, para in ex.map(one, jobs):
+                results[key] = para
+                done += 1
+                if done % 200 == 0:
+                    print(f"  {done}/{len(jobs)}", file=sys.stderr)
     else:
-        reqs = []
-        for i, text in enumerate(keys):
-            for st in styles:
-                reqs.append({"custom_id": f"{i}-{st}", "params": {
-                    "model": args.model, "max_tokens": 300, "system": SYSTEM, "thinking": {"type": "disabled"},
-                    "messages": [{"role": "user", "content": f"Voice: {STYLES[st]}.\n<message>\n{text}\n</message>"}]}})
-        batch = client.messages.batches.create(requests=reqs)
-        print(f"batch {batch.id} created ({len(reqs)} requests); polling…", file=sys.stderr)
-    while batch.processing_status != "ended":
-        time.sleep(15)
-        batch = client.messages.batches.retrieve(batch.id)
-        print(f"  {batch.processing_status} {batch.request_counts}", file=sys.stderr)
-    kept = dropped = errors = 0
-    with OUT.open("w", encoding="utf-8") as fh:
+        import anthropic
+        client = anthropic.Anthropic()
+        if args.resume:
+            batch = client.messages.batches.retrieve(args.resume)
+        else:
+            reqs = [{"custom_id": f"{i}-{st}", "params": {
+                "model": model, "max_tokens": 300, "system": SYSTEM, "thinking": {"type": "disabled"},
+                "messages": [{"role": "user", "content": f"Voice: {STYLES[st]}.\n<message>\n{text}\n</message>"}]}}
+                for i, st, text in jobs]
+            batch = client.messages.batches.create(requests=reqs)
+            print(f"batch {batch.id} created ({len(reqs)} requests); polling…", file=sys.stderr)
+        while batch.processing_status != "ended":
+            time.sleep(15)
+            batch = client.messages.batches.retrieve(batch.id)
+            print(f"  {batch.processing_status} {batch.request_counts}", file=sys.stderr)
         for r in client.messages.batches.results(batch.id):
             i, st = r.custom_id.split("-", 1)
-            text = keys[int(i)]
-            if r.result.type != "succeeded":
+            results[(int(i), st)] = ("".join(b.text for b in r.result.message.content if b.type == "text").strip()
+                                     if r.result.type == "succeeded" else "")
+    kept = dropped = errors = 0
+    with OUT.open("w", encoding="utf-8") as fh:
+        for (i, st), para in sorted(results.items()):
+            text = keys[i]
+            if not para:
                 errors += 1
                 continue
-            para = "".join(b.text for b in r.result.message.content if b.type == "text").strip()
-            if not para or any(fact not in para for fact in strings[text] if fact):
+            if any(fact not in para for fact in strings[text] if fact):
                 dropped += 1
                 continue
             fh.write(json.dumps({"text": text, "style": st, "paraphrase": para}, ensure_ascii=False) + "\n")
