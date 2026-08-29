@@ -1,0 +1,511 @@
+{
+ "experiment": "exp_03_constraint_rerank",
+ "rows": [
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.88,
+   "mrr": 0.561915,
+   "mttc": 3.71,
+   "efficiency": 0.729,
+   "recommended_technical_score": 0.754375,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.7,
+     "mrr": 0.558333,
+     "mttc": 5.5
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.515813,
+     "mttc": 3.65
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.8875,
+     "mrr": 0.551057,
+     "mttc": 3.2625
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.715,
+     "mttc": 4.466667
+    }
+   },
+   "label": "V1 control (+ boundary re-ask)",
+   "config": {
+    "label": "V1 control (+ boundary re-ask)",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": false,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 30.0,
+   "p95_ms": 51.0,
+   "wall_s": 21.0,
+   "agent_exceptions": 0,
+   "override_hr": 0.9,
+   "hit_turns": {
+    "1": 20,
+    "2": 62,
+    "3": 60,
+    "4": 25,
+    "5": 4,
+    "6": 3,
+    "7": 1,
+    "9": 1
+   },
+   "rank_at_hit": {
+    "1": 88,
+    "2": 21,
+    "3": 18,
+    "4": 11,
+    "5": 3,
+    "6": 10,
+    "7": 2,
+    "8": 9,
+    "9": 5,
+    "10": 9
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.95,
+   "mrr": 0.630994,
+   "mttc": 2.9,
+   "efficiency": 0.81,
+   "recommended_technical_score": 0.826298,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.683333,
+     "mttc": 4.0
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9625,
+     "mrr": 0.632912,
+     "mttc": 2.7125
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9375,
+     "mrr": 0.561488,
+     "mttc": 2.525
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.793783,
+     "mttc": 4.033333
+    }
+   },
+   "label": "V5 rerank top-300 by #verbatim constraint matches",
+   "config": {
+    "label": "V5 rerank top-300 by #verbatim constraint matches",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": false,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.2,
+   "p95_ms": 53.2,
+   "wall_s": 16.2,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 24,
+    "2": 84,
+    "3": 54,
+    "4": 26,
+    "5": 1,
+    "7": 1
+   },
+   "rank_at_hit": {
+    "1": 101,
+    "2": 23,
+    "3": 18,
+    "4": 7,
+    "5": 7,
+    "6": 10,
+    "7": 6,
+    "8": 5,
+    "9": 9,
+    "10": 4
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.975,
+   "mrr": 0.643284,
+   "mttc": 2.585,
+   "efficiency": 0.8415,
+   "recommended_technical_score": 0.848785,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.596667,
+     "mttc": 3.9
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9875,
+     "mrr": 0.616205,
+     "mttc": 2.3875
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.975,
+     "mrr": 0.610218,
+     "mttc": 2.1
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.819206,
+     "mttc": 3.966667
+    }
+   },
+   "label": "V6 rerank top-300 by #verbatim matches, category 2nd key",
+   "config": {
+    "label": "V6 rerank top-300 by #verbatim matches, category 2nd key",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 27.3,
+   "p95_ms": 50.6,
+   "wall_s": 13.9,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 34,
+    "2": 82,
+    "3": 54,
+    "4": 24,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 102,
+    "2": 25,
+    "3": 15,
+    "4": 12,
+    "5": 8,
+    "6": 11,
+    "7": 8,
+    "8": 5,
+    "9": 5,
+    "10": 4
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.975,
+   "mrr": 0.646524,
+   "mttc": 2.585,
+   "efficiency": 0.8415,
+   "recommended_technical_score": 0.849757,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.596667,
+     "mttc": 3.9
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9875,
+     "mrr": 0.61693,
+     "mttc": 2.4
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.975,
+     "mrr": 0.617178,
+     "mttc": 2.0875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.820317,
+     "mttc": 3.966667
+    }
+   },
+   "label": "V7 = V6 + constraints also as FTS5 phrase terms",
+   "config": {
+    "label": "V7 = V6 + constraints also as FTS5 phrase terms",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": true,
+    "cat_hard_filter": false,
+    "pool": 300,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 28.7,
+   "p95_ms": 51.7,
+   "wall_s": 14.5,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 34,
+    "2": 83,
+    "3": 53,
+    "4": 23,
+    "5": 1,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 103,
+    "2": 23,
+    "3": 18,
+    "4": 12,
+    "5": 8,
+    "6": 7,
+    "7": 11,
+    "8": 4,
+    "9": 6,
+    "10": 3
+   }
+  },
+  {
+   "sample_count": 200,
+   "hit_rate_at_10": 0.975,
+   "mrr": 0.63995,
+   "mttc": 2.575,
+   "efficiency": 0.8425,
+   "recommended_technical_score": 0.847985,
+   "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "scenario_metrics": {
+    "boundary": {
+     "sample_count": 10,
+     "hit_rate_at_10": 0.9,
+     "mrr": 0.596667,
+     "mttc": 3.9
+    },
+    "browsing": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.9875,
+     "mrr": 0.616205,
+     "mttc": 2.375
+    },
+    "buying": {
+     "sample_count": 80,
+     "hit_rate_at_10": 0.975,
+     "mrr": 0.601885,
+     "mttc": 2.0875
+    },
+    "intent_override": {
+     "sample_count": 30,
+     "hit_rate_at_10": 0.966667,
+     "mrr": 0.819206,
+     "mttc": 3.966667
+    }
+   },
+   "label": "V8 = V6 with pool 1000",
+   "config": {
+    "label": "V8 = V6 with pool 1000",
+    "accumulate": true,
+    "ask": true,
+    "ask_order": [
+     "feature",
+     "material",
+     "color",
+     "style",
+     "size",
+     "use_case",
+     "budget"
+    ],
+    "ask_other": false,
+    "boundary_reask": true,
+    "reask_on_yield2": false,
+    "extractor": "template",
+    "query_source": "messages",
+    "max_terms": 40,
+    "df_order": false,
+    "phrase_terms": false,
+    "cat_hard_filter": false,
+    "pool": 1000,
+    "pool_union_category": false,
+    "rerank": true,
+    "cat_sort_key": true,
+    "match_mode": "exact",
+    "soft_threshold": 0.8,
+    "norm_match": false,
+    "match_fields": "three",
+    "tiebreak": "bm25",
+    "blend_w": 0.0,
+    "cutoff": "none",
+    "exclusion": "none"
+   },
+   "paraphrase": false,
+   "p50_ms": 29.3,
+   "p95_ms": 53.7,
+   "wall_s": 14.9,
+   "agent_exceptions": 0,
+   "override_hr": 0.966667,
+   "hit_turns": {
+    "1": 34,
+    "2": 84,
+    "3": 52,
+    "4": 24,
+    "6": 1
+   },
+   "rank_at_hit": {
+    "1": 101,
+    "2": 25,
+    "3": 16,
+    "4": 12,
+    "5": 8,
+    "6": 11,
+    "7": 8,
+    "8": 5,
+    "9": 5,
+    "10": 4
+   }
+  }
+ ],
+ "notes": {}
+}

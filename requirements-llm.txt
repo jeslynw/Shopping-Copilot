@@ -1,0 +1,1 @@
+anthropic>=0.40   # optional: customer-facing message polisher only; never in the scored path (COPILOT_LLM=1 opts in)
