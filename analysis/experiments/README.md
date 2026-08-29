@@ -1,4 +1,4 @@
-# analysis/experiments — reference implementation of PLAN.md §3
+# analysis/experiments — reference implementation of docs/PLAN.md §3
 
 `common.py` is a single configurable agent (`Config` = one flag per layer) plus a runner that
 calls the **real, unmodified** `evaluator/local_evaluator.py::evaluate()` on the 200 public sessions.
@@ -22,4 +22,4 @@ Run all: `analysis/experiments/run_all.sh`. `common.Paraphraser` is the syntheti
 (monkeypatches the simulator strings in-process; the evaluator file is never edited).
 
 These scripts keep per-product text in Python for speed of iteration; the shipped `copilot/` package
-fetches pool text from FTS5 instead (memory-lean, see PLAN.md §5). `tools/ablate.py` is built on them.
+fetches pool text from FTS5 instead (memory-lean, see docs/PLAN.md §5). `tools/ablate.py` is built on them.

@@ -46,6 +46,23 @@ The command writes per-session results and aggregate metrics to `results.json`.
 The included weak BM25 starter scores Hit Rate@10 `0.125`, MRR `0.068034`, and
 MTTC `9.81` on the released public set. See `docs/baseline_results.json`.
 
+## Team Agent vs Baseline
+
+`starter/agent.py` is the harness entry point and exports the **team agent** (`copilot/`, deterministic and
+stdlib-only) by default. The kit's original weak BM25 starter is kept unchanged as `starter/baseline_agent.py`.
+Same command, either agent:
+
+```bash
+python3 -m evaluator.local_evaluator                  # team agent   → TechnicalScore 0.958 on the public set
+AGENT=baseline python3 -m evaluator.local_evaluator   # kit baseline → TechnicalScore 0.107
+python3 tools/run_eval.py --profile                   # team agent + latency / memory / contract checks
+```
+
+Layout: `agent.py` (submission entry file, re-exports the same `Agent`) · `copilot/` (implementation) ·
+`tools/` (evaluation, contract validation, data download) · `tests/` (kit unittest + ours) ·
+`analysis/experiments/` (measured ablation ladder) · `docs/PLAN.md` (build plan) · `docs/results/` (committed scores).
+Tests: `pip install -r requirements-dev.txt && pytest -q`.
+
 ## Agent Interface
 
 ```python
