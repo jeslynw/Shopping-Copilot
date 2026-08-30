@@ -16,6 +16,7 @@ class Constraint:
 class SessionState:
     session_id: str
     turn: int = 0
+    profile_tags: tuple = ()                             # user_profile.preference_tags (lowercased); read only by profile_prior
     messages: list = field(default_factory=list)
     constraints: list = field(default_factory=list)      # list[Constraint], de-duplicated by text, insertion order
     categories: tuple = ()

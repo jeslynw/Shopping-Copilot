@@ -27,6 +27,11 @@ class Config:
     match_fields: str = "six"          # six | three
     tiebreak: str = "popularity"       # popularity | bm25 | blend
     blend_w: float = 0.0
+    profile_prior: bool = False        # ABLATION: `user_profile.preference_tags` as a soft sort key between category and
+                                       # popularity (never a filter; cannot change the tie width that drives the cutoff)
+    vector_route: bool = False         # ABLATION: second retrieval route — TF-IDF cosine over title+features+categories,
+                                       # top `vector_top` unioned into the BM25 pool (recall only; index built lazily)
+    vector_top: int = 100
     # cutoff / exclusion
     cutoff: str = "gated"              # none | R6 | gated | gated2 | top1
     exclusion: str = "prev_turn"       # none | prev_turn | turn5 | naive

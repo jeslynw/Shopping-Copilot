@@ -7,12 +7,14 @@ from __future__ import annotations
 import gzip
 import io
 import json
+import math
 import sqlite3
-from collections import defaultdict
+from array import array
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Iterable, Optional
 
-from .extract import CategoryMatcher, TOKEN_RE, norm
+from .extract import CategoryMatcher, TOKEN_RE, norm, tokens
 
 EXCLUDED_CATS = {"clothing", "clothing shoes & jewelry", "clothing, shoes & jewelry"}
 
@@ -61,6 +63,43 @@ def _open_text(path: Path):
     if magic == b"\x1f\x8b":
         return io.TextIOWrapper(gzip.open(path, "rb"), encoding="utf-8")
     return open(path, encoding="utf-8")
+
+
+class VectorIndex:
+    """TF-IDF cosine similarity route (`vector_route` ablation flag). Pure Python, deterministic, in-memory; built
+    lazily on first use so the shipped configuration pays nothing. Postings over title+features+categories tokens;
+    idf = log(1 + N/df); documents and the query are L2-normalised."""
+
+    def __init__(self, con: sqlite3.Connection, rid_to_asin: dict[int, str]):
+        self.asins = rid_to_asin
+        by_term: dict[str, list] = defaultdict(list)
+        for rid, title, feats, cats in con.execute("SELECT rowid, title, features, categories FROM products"):
+            for t, f in Counter(tokens(f"{title} {feats} {cats}")).items():
+                by_term[t].append((rid, f))
+        n = max(len(rid_to_asin), 1)
+        self.idf = {t: math.log(1.0 + n / len(ps)) for t, ps in by_term.items()}
+        norm2: dict[int, float] = defaultdict(float)
+        for t, ps in by_term.items():
+            w = self.idf[t]
+            for rid, f in ps:
+                norm2[rid] += (w * f) ** 2
+        self.norm = {rid: (math.sqrt(v) or 1.0) for rid, v in norm2.items()}
+        self.post = {t: (array("l", [r for r, _ in ps]), array("f", [f for _, f in ps])) for t, ps in by_term.items()}
+
+    def search(self, terms: list[str], limit: int) -> list[tuple[str, float]]:
+        q = [t for t in dict.fromkeys(terms) if t in self.post]
+        if not q:
+            return []
+        qn = math.sqrt(sum(self.idf[t] ** 2 for t in q)) or 1.0
+        scores: dict[int, float] = defaultdict(float)
+        for t in q:
+            w2 = self.idf[t] ** 2
+            rids, tfs = self.post[t]
+            for rid, f in zip(rids, tfs):
+                scores[rid] += w2 * f
+        best = sorted(((s / (self.norm[rid] * qn), self.asins[rid]) for rid, s in scores.items()),
+                      key=lambda x: (-x[0], x[1]))[:limit]
+        return [(a, s) for s, a in best]
 
 
 class Catalog:
@@ -115,6 +154,7 @@ class Catalog:
             c.sort()
         self.ids = set(self.rowid)
         self.matcher = CategoryMatcher(self.members.keys())
+        self._vec: Optional[VectorIndex] = None            # lazy; only the vector_route ablation builds it
 
     # -- retrieval ------------------------------------------------------------------------
     def df(self, terms: Iterable[str]) -> dict[str, int]:
@@ -138,6 +178,11 @@ class Catalog:
                 "WHERE products MATCH ? ORDER BY s, parent_asin LIMIT ?", (expr, limit)).fetchall()
         except sqlite3.OperationalError:
             return []
+
+    def vector_search(self, terms: list[str], limit: int) -> list[tuple[str, float]]:
+        if self._vec is None:
+            self._vec = VectorIndex(self.con, {rid: a for a, rid in self.rowid.items()})
+        return self._vec.search(terms, limit)
 
     def titles(self, asins: list[str]) -> dict[str, str]:
         rids = [self.rowid[a] for a in asins if a in self.rowid]

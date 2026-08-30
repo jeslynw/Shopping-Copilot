@@ -3,12 +3,16 @@
 One page so tracks B (robustness), C (LLM polisher) and D (tooling/demo) can code against the core
 before A finishes it. Names here are binding; change them only via a PR that also updates this file.
 Reference implementation of every layer: `analysis/experiments/common.py` (same names, in-memory).
+*Updated 30 Aug 2026 to match v1.0 + the measured ablation flags (`gated2`, `profile_prior`, `vector_route`) and the
+provider-aware LLM layer of PLAN §11 Rev 2; the invariants themselves are unchanged since P1.*
 
 ## Invariants (never negotiable)
 - `Agent.__init__`, `reset`, `respond` never raise. `respond` always returns exactly the four keys
   `{"message": str, "ask_attribute": str, "recommendations": [{"parent_asin": str}, …], "usage": {"prompt_tokens": int, "completion_tokens": int}}`
   — no extra keys anywhere (contract has `additionalProperties: false`). `ask_attribute` is never `null`.
-- Scored configuration = deterministic core, LLM **off**. `COPILOT_LLM=1` opts in; LLM output is assigned to `message` only.
+- Scored configuration = deterministic core (no key, or `COPILOT_OFFLINE=1`). With a key present the LLM layer is **on by
+  default** (PLAN §11 Rev 2; `COPILOT_LLM=0` opts out) and its output is assigned to `message` only — measured: all 200
+  sessions identical with polish on vs offline (`docs/results/v1.0_llm_polish.json`).
 - Accumulate-only state: nothing is ever erased on "ignore my earlier preference".
 - No scenario / override-message detection anywhere in the scoring path (ranking, cutoff, exclusion).
 - `state.prev` (last turn's recommendations) is written **only** after the outgoing dict validates; the fallback path never writes it.
@@ -32,7 +36,10 @@ class Config:                         # shipped defaults; every §3 layer is a f
     match_fields: str = "six"         # title, features, details, description, categories, store
     tiebreak: str = "popularity"      # popularity (rating_number, lexicographic) | bm25 | blend
     blend_w: float = 0.0
-    cutoff: str = "gated"             # none | R6 | gated | top1 (reference rows)
+    profile_prior: bool = False       # ABLATION: preference_tags as a soft sort key — measured 0.904, off (REPORT §6)
+    vector_route: bool = False        # ABLATION: TF-IDF-cosine second retrieval route — measured 0.935 holdout, off (REPORT §6)
+    vector_top: int = 100
+    cutoff: str = "gated"             # none | R6 | gated | gated2 | top1 (reference rows)
     exclusion: str = "prev_turn"      # none | prev_turn | turn5 | naive (reference row)
     llm: bool = False                 # on iff an API key is present (OPENAI_API_KEY / ANTHROPIC_API_KEY, .env read); COPILOT_LLM=1/0, COPILOT_OFFLINE=1
     llm_extract: bool = False         # grounded extraction fallback — ablation flag (measured 0.918 vs deterministic 0.924 on the fixture)
@@ -46,6 +53,7 @@ class Config:                         # shipped defaults; every §3 layer is a f
 class SessionState:
     session_id: str
     turn: int = 0
+    profile_tags: tuple[str, ...] = ()             # user_profile.preference_tags (lowercased); read only by profile_prior
     messages: list[str]                            # raw, accumulate-only
     constraints: list[Constraint]                  # Constraint(text: str, provenance: "template"|"clause", turn: int); de-duplicated, ordered
     categories: tuple[str, ...] = ()               # matched coarse_category() phrases (tie set); "" never
@@ -85,14 +93,15 @@ class Catalog:
     def __init__(self, path)                             # FTS5 (starter schema + weights); Python keeps only asin→(rowid, rating_number, coarse), df, matcher
     ids: set[str]; pop: dict[str, int]; coarse: dict[str, str]; members: dict[str, list[str]]; df: dict[str, int]; matcher: CategoryMatcher
     def search(self, terms: list[str], limit: int) -> list[tuple[str, float]]    # (parent_asin, bm25) — tokens-only MATCH, never raw text
-    def texts(self, asins: list[str]) -> dict[str, str]                          # six-field matcher text, norm()-ed, fetched from FTS5 per turn
+    def texts(self, asins: list[str], fields: str = "six") -> dict[str, str]     # matcher text, norm()-ed, fetched from FTS5 per turn
+    def vector_search(self, terms, limit) -> list[tuple[str, float]]             # lazy TF-IDF-cosine route (vector_route flag only)
     price(self, asin) -> float | None
 ```
 
 ## `copilot/retrieve.py`
 ```python
-def build_terms(state: SessionState, new: list[Constraint], cfg: Config, df: dict[str, int]) -> list[str]
-def retrieve(catalog: Catalog, terms: list[str], state: SessionState, cfg: Config) -> list[Candidate]   # Candidate(asin, bm25_rank, bm25)
+def build_terms(state: SessionState, new: list[Constraint], cfg: Config, catalog: Catalog) -> list[str]
+def retrieve(catalog: Catalog, terms: list[str], state: SessionState, cfg: Config, top_k: int) -> list[Candidate]   # Candidate(asin, bm25_rank, bm25)
 ```
 
 ## `copilot/rank.py`
@@ -117,21 +126,24 @@ def apply_reply(state: SessionState, parsed: Parsed, cfg: Config) -> list[Constr
 
 ## `copilot/respond.py`
 ```python
-def build_message(state, parsed, ask: str, top: list[Ranked], k: int, tier_size: int) -> str
+def build_message(state, parsed, ask: str, top: list[Ranked], k: int, tier_size: int, titles: dict) -> str
 #   deterministic; includes "matched on: …" from Ranked.matched; never asserts "found it" before turn 3
 ```
 
-## `copilot/llm.py` (track C)
+## `copilot/llm.py` (track C — superseded `Polisher`; provider-aware since PLAN §11 Rev 2)
 ```python
-class Polisher:
-    def __init__(self, cfg: Config, budget_s: float = 1.5)   # disabled unless COPILOT_LLM=1 and not COPILOT_OFFLINE=1; lazy `import anthropic`
-    enabled: bool
-    def rewrite(self, draft: str, facts: dict) -> str | None  # ONE call/turn; returns None on ANY failure/timeout/budget miss/disabled; never raises
-    last_usage: tuple[int, int]                              # (prompt_tokens, completion_tokens) of the last successful call, else (0, 0)
-    def summary(self) -> dict                                # calls, failures, p95_ms, breaker_open — printed once per run
+class LLM:
+    def __init__(self, cfg: Config, client=None, provider: str | None = None)  # openai | anthropic; lazy provider import,
+    enabled: bool                    # bool(cfg.llm) and COPILOT_OFFLINE != "1" and any use-flag on; fake client injectable
+    def begin_turn(self) -> None                              # resets the per-turn 4 s budget (cfg.llm_budget_s)
+    def extract(self, msg, turn, cands) -> Parsed | None      # grounded fallback (llm_extract flag, off)
+    def polish(self, draft: str, facts: dict) -> str | None   # ONE call/turn; None on ANY failure/timeout/budget/disabled
+    def rerank(self, items, constraints, category) -> list | None   # llm_rerank flag, off; grounded to offered ids
+    turn_usage: tuple[int, int]                               # (prompt_tokens, completion_tokens) this turn, else (0, 0)
+    def summary(self) -> dict                                 # calls, failures, budget_skips, p50/p95_ms, tokens, breaker_open
 ```
-Failure budget 3 per 20 calls → breaker opens for the run. Product text and user messages are passed as
-delimited data; the result is post-filtered (URLs, `store` names) before assignment to `message`.
+Failure budget 3 per 20 calls → breaker opens for the run; `max_retries=0`. Product text and user messages are passed as
+delimited data; polish output is post-filtered (URLs, `store` names) before assignment to `message`.
 
 ## `copilot/agent.py` + shims
 ```python

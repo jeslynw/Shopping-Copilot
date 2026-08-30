@@ -49,7 +49,14 @@ class Agent:
     def reset(self, session_id: str, user_profile: dict) -> None:
         try:
             sid = str(session_id)
-            self.sessions = {sid: SessionState(session_id=sid)}   # keep only the live session
+            st = SessionState(session_id=sid)
+            try:
+                tags = user_profile.get("preference_tags") if isinstance(user_profile, dict) else None
+                if isinstance(tags, (list, tuple)):
+                    st.profile_tags = tuple(str(t).strip().lower() for t in tags[:8])
+            except Exception:
+                pass
+            self.sessions = {sid: st}                             # keep only the live session
         except Exception:
             self.internal_exceptions += 1
 

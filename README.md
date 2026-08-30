@@ -77,9 +77,26 @@ Tests: `pip install -r requirements-dev.txt && pytest -q`.
 uv venv --python 3.11 .venv && source .venv/bin/activate   # Python ≥ 3.10 works; 3.11 is pinned in .python-version
 bash tools/download_data.sh                                  # catalog.jsonl.gz from the kit release → SHA256 check → data/catalog.jsonl
 python3 -m evaluator.local_evaluator                         # TechnicalScore 0.958 (HR@10 1.000 · MRR 0.937 · MTTC 2.155) → results.json
-python3 tools/run_eval.py --profile                          # same run + contract check on every response, p50/p95 latency, RSS
+COPILOT_OFFLINE=1 python3 tools/run_eval.py --profile        # scored-configuration profile (matches docs/results/v1.0.json)
 pip install -r requirements-dev.txt && pytest -q             # 45 tests (≈ 5 min — they re-run the evaluator)
 ```
+
+### Offline vs online (LLM) runs
+
+The LLM layer is **on by default whenever an API key is present** and off otherwise — same score either way, by
+construction (the model only rewrites the customer-facing `message`; all 200 per-session results are identical:
+`docs/results/v1.0.json` vs `v1.0_llm_polish.json`).
+
+| run | command | what to expect |
+|---|---|---|
+| **Offline — the scored configuration** | `COPILOT_OFFLINE=1 python3 -m evaluator.local_evaluator` | 0.958 in ≈ 20 s; `reported_token_usage` all zeros; no network |
+| **Online — LLM message polish** | put `OPENAI_API_KEY=…` (or `ANTHROPIC_API_KEY`) in a git-ignored `.env` or export it, then `python3 -m evaluator.local_evaluator` | same 0.958; non-zero `reported_token_usage` (~431 calls); ≈ 12 min, ≈ $0.09 with `gpt-4.1-mini` |
+| Quick 2-second check | `python3 tools/demo.py --session public_0042 --llm` | header says "LLM polish on"; last line shows calls/tokens |
+
+Switches: `COPILOT_OFFLINE=1` is a hard kill (wins over any key); `COPILOT_LLM=0` opts out, `COPILOT_LLM=1` forces on;
+`COPILOT_LLM_PROVIDER=openai|anthropic` picks the provider when both keys exist. If the network fails mid-run, a circuit
+breaker disables the layer and the run completes offline with an unchanged score
+(`tests/test_llm.py::test_offline_flags_do_not_change_results`).
 
 - **Runtime dependencies: none.** The scored path is the Python standard library (SQLite FTS5); `requirements.txt` has nothing
   to install. Dev/optional extras (`pytest`, `jsonschema`, `openai`, `anthropic`) are in `requirements-dev.txt`.
@@ -107,18 +124,28 @@ pip install -r requirements-dev.txt && pytest -q             # 45 tests (≈ 5 m
   instructions…). That is the first thing we would build with more time.
 - **The popularity prior is MostPop and it works because of how sessions are sampled.** Targets are leave-last-out
   purchases from 5-core reviews, so heavily-reviewed items are over-represented (163/200 public targets are in the top 10
-  by review count of their coarse category). A store with different traffic needs its own prior; it is one flag
-  (`tiebreak`) and the no-popularity row is in the ablation table.
+  by review count of their coarse category). We measured it: on 1,000 held-out targets drawn the same way from the source
+  dataset the score is **0.942**; on 1,000 uniformly random catalog products it is **0.873** (`tools/ext_set.py`, REPORT
+  §5.1). A store with different traffic needs its own prior; it is one flag (`tiebreak`) and the no-popularity row is in
+  the ablation table.
 - **The one-item shelf is a product choice.** When more than ten items tie on everything the shopper has said, the
   copilot commits to a single pick and asks the question that splits the tie, then releases to a full shelf as soon as
   the constraints discriminate. We measured the ungated "always return one item" policy and disclose it in `REPORT.md`
   rather than ship it.
-- **No dense retrieval and no LLM inside ranking.** Both were measured (docs/PLAN.md §3, §7b) and did not pay here: the
-  discriminating signal is exact attribute strings, and one hallucinated constraint per session costs −0.066. A catalog
-  with populated prices, sizes and materials (here < 5 % coverage) would make structured filters and semantic matching
-  worthwhile.
-- **No cross-session personalization.** The profile is nine review-aspect tags and each session is scored independently;
-  a deployment would carry a slow user profile as *priors*, never as filters.
+- **No vector route and no LLM inside ranking — both measured, neither shipped.** The LLM reranker: 0.955 vs 0.958,
+  +1.5 s/turn (`docs/results/llm_rerank_probe.json`); one hallucinated constraint per session costs −0.066
+  (docs/PLAN.md §7b). The vector-similarity route (`vector_route` flag: TF-IDF cosine, second candidate pool unioned
+  into BM25's): inert on the public set, and on the 1,000-session holdout it rescues 12 missed targets but costs more
+  MRR than it gains — net −0.007 (`docs/results/vector_route_*.json`). The simulator lifts requirements verbatim from
+  the listing, so exact attribute strings dominate; a *neural-embedding* variant remains unmeasured and is what we'd try
+  first against real free-form shoppers.
+- **No cross-session personalization — measured, not just skipped.** The provided long-term profile is a 9-tag vocabulary
+  that is nearly constant across shoppers (82 % "fit", 77 % "material", 72 % "comfort"). We implemented it as a soft
+  ranking prior (`profile_prior` flag, a sort key between category and popularity — never a filter) and measured it:
+  0.958 → **0.904** on the public set, 0.942 → **0.909** on the 1,000-session holdout. Generic aspect tags match verbose
+  listings, not the shopper's actual purchase, so the prior displaces the popularity signal and loses. A deployment would
+  need genuinely discriminative profiles before this pays; the flag and both runs are in the repo
+  (`docs/results/profile_prior_*.json`).
 - **Public-set overfitting risk.** 200 sessions; bootstrap 95 % CI half-width ≈ 0.01–0.016. Every shipped knob had to
   clear Δ ≥ +0.02 or show a robustness gain with no regression; pool size (300) is a tuned hyper-parameter.
 
