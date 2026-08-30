@@ -16,6 +16,8 @@ TikTok TechJam 2026 · Problem Statement 4 (Conversational E-Commerce Search) ·
 | **Shopping Copilot — deterministic core = the scored configuration** | **1.000** | **0.937** | **2.155** | **0.958** |
 | same, LLM message polish on (full 200-session live run, 431 calls, 0 failures: per-session results identical — `docs/results/v1.0_llm_polish.json`) | 1.000 | 0.937 | 2.155 | 0.958 (= by construction) |
 | Shopping Copilot under LLM-paraphrased simulator strings (dev harness, §7) | 0.995 | 0.820 | 1.98 | 0.924 |
+| Shopping Copilot on **1,000 held-out sessions** from the source dataset — last purchase of 5-core reviewers, the organizers' sampling (§5.1) | 0.981 | 0.937 | 2.50 | 0.942 |
+| same, 1,000 uniformly random catalog products as targets — no popularity skew (§5.1) | 0.922 | 0.861 | 3.29 | 0.873 |
 
 `TechnicalScore = 0.5·HR@10 + 0.3·MRR + 0.2·clip((11 − MTTC)/10)`. Bootstrap 95 % CI of the shipped score on 200
 sessions: **[0.948, 0.967]**. The scored configuration has **no runtime dependencies, makes no network calls, answers a
@@ -121,6 +123,28 @@ score from the override turn on); rank at hit `{1: 180, 2: 9, 3: 5, 4: 3, 5: 1, 
 cost of the information gate: the "no preference" reply yields no constraint, the gate releases to a full shelf, and the
 hit lands at rank > 1 (`gated2` fixes it for +0.003 — inside noise, kept as a flag).
 
+### 5.1 Held-out sessions from the source dataset (`tools/ext_set.py` → `docs/results/ext_lastout.json`, `ext_uniform.json`)
+
+The public 200 are the only sessions we tuned on, so we built two holdouts the evaluator scores unchanged — a session is
+just a target `parent_asin` in the catalog plus a scenario type; the shopper's lines are generated from the listing. Both
+exclude the 200 public targets, use the public scenario mix (40/40/15/5) and recycle the public profiles (unused by the
+agent).
+
+| targets | HR@10 | MRR | MTTC | TechScore | hit on turn 1 at rank 1 | target reviews p25 / p50 / p75 | in their category's top-10 |
+|---|---|---|---|---|---|---|---|
+| public 200 (reference) | 1.000 | 0.937 | 2.15 | **0.958** | 34 % | 986 / 7,078 / 18,915 | 82 % |
+| **last-out 1,000** — the last purchase of each 5-core reviewer, streamed from the source split (`benchmark/5core/last_out/Clothing_Shoes_and_Jewelry.test.csv`, 219,848 rows → 1,000 catalog hits): the organizers' sampling | 0.981 | 0.937 | 2.50 | **0.942** | 25 % | 251 / 879 / 3,040 | 62 % |
+| **uniform 1,000** — random catalog products (seed 2026): no popularity skew | 0.922 | 0.861 | 3.29 | **0.873** | 11 % | 3 / 14 / 67 | 15 % |
+
+Reading: ranking quality does not move — MRR is 0.937 on both the public set and the realistic holdout. What the public
+set overstates is *popularity*: its targets are ~8× more reviewed than a plain last-purchase sample, so the one-item first
+pick is right 34 % of the time there vs 25 % on the holdout, and 19/1,000 held-out sessions never surface their target in
+10 turns (niche items inside huge near-duplicate tiers — printed T-shirts, button-down shirts — whose stated requirements
+are generic: "Imported", "Machine wash"). Per scenario on the holdout, HR@10 is buying 0.985 / browsing 0.978 /
+intent_override 0.980 / boundary 0.980. The uniform control removes most of the prior's advantage (median 14 reviews) and
+still reaches HR 0.922 / MRR 0.861 — that is the constraint-matching core on its own. Expectation for the organizers'
+private sessions, if sampled the way the public set was: **0.94–0.96**.
+
 ## 6. Ablation ladder ⟳ (`python3 tools/ablate.py --reference --per-session` → `docs/results/ablation.json`)
 
 Measured on the **shipped agent at v1.0** (29 Aug 2026, 200 public sessions, official `evaluate()`, LLM off, 0 exceptions /
@@ -164,6 +188,9 @@ clean strings (inside noise) and is kept because the extracted-term query and th
 | `pool1000`: pool 1000 instead of 300 | 1.000 | 0.930 | 0.956 | −0.002 | 1.00 | ≈ +30 % wall time; pool size is a regularizer |
 | `clause`: clause-only extractor on clean strings | 1.000 | 0.845 | 0.935 | −0.023 | 1.00 | the robustness tax if templates were dropped — hence the hybrid (template first, clause fallback) |
 | grounded LLM extraction fallback (`llm_extract`), paraphrase fixture (§7) | — | — | 0.918 vs 0.924 deterministic | −0.006 | 1.00 | no gain, +1 s/turn, 325 calls |
+| `profile_prior`: `preference_tags` as a soft sort key between category and popularity (`docs/results/profile_prior_*.json`) | 0.990 | 0.800 | 0.904 | −0.054 | 1.00 | the brief's long-term profile, measured: the 9-tag vocabulary is near-universal (82 % "fit"), matches listing verbosity rather than the purchase, and displaces the popularity prior; holdout 0.909 (−0.033) |
+| `vector_route`: second retrieval route — TF-IDF cosine over title+features+categories, top-100 ∪ BM25 pool (`docs/results/vector_route_*.json`) | 1.000 | 0.937 | 0.958 | −0.000 | 1.00 | the brief's vector-similarity route, measured: inert on the public set (BM25 recall already 1.000); on the 1,000-session holdout it **rescues 12 targets** (HR 0.981 → 0.988, MTTC −0.10) but the extra near-duplicates win popularity ties elsewhere (MRR 0.937 → 0.896) → net **0.935** (−0.007), +240 MB, +20 ms/turn |
+| `llm_rerank`: gpt-4.1-mini orders the tied top tier (polish off; `docs/results/llm_rerank_probe.json`) | 1.000 | 0.930 | 0.955 | −0.003 | 1.00 | tied items satisfy every stated requirement, so the model can only replace the popularity prior with a guess: 5 fewer turn-1 hits, +7 turns, p50 1.5 s/turn, 322 calls (166k prompt tokens) |
 
 *Corrections recorded here:* (1) the planning notes (docs/PLAN.md §3j) quote an ungated always-top-1 score of 0.969 from
 the original in-session scripts; the regenerated reference scripts measured 0.881 (no exclusion) / 0.928 (with exclusion)
@@ -250,7 +277,13 @@ See README → *Limitations and What We'd Improve*. Items a judge should hear fr
 to the simulator's `intent_card()` channel (paraphrased 0.924 vs clean 0.958); the popularity prior is MostPop over a
 leave-last-out sample (§4.5); the one-item shelf is disclosed with its degenerate cousin (§6); previous-turn exclusion is
 kept below the Δ ≥ 0.02 rule as a UX behaviour; private intent cards may be pre-materialized by a different code path
-(`materialize_hidden_fields`), which the per-constraint token-subset fallback in the matcher is there to absorb.
+(`materialize_hidden_fields`), which the per-constraint token-subset fallback in the matcher is there to absorb. Measured
+generalisation (§5.1): 1,000 held-out targets sampled the organizers' way score **0.942**; 1,000 uniformly random catalog
+products score **0.873** — the gap is the popularity prior's dependence on how sessions are sampled, not on the 200 public
+sessions themselves (MRR is identical on the held-out set). The brief's long-term-profile idea is also measured rather
+than skipped: `preference_tags` as a soft ranking prior (`profile_prior`) scores **0.904** public / **0.909** holdout —
+the 9-tag vocabulary is near-universal across shoppers, so it matches listing verbosity, not the purchase, and displaces
+the popularity prior (§6).
 
 ## 12. Team contributions
 

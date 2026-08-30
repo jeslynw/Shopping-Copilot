@@ -38,4 +38,9 @@ def retrieve(catalog: Catalog, terms: list[str], state: SessionState, cfg: Confi
         extra = sorted({a for c in state.categories for a in catalog.members.get(c, ())} - have)
         base = len(pool) + 10_000
         pool += [Candidate(a, base + i, 0.0) for i, a in enumerate(extra)]
+    if cfg.rerank and cfg.vector_route and terms:
+        have = {c.asin for c in pool}
+        extra = [a for a, _ in catalog.vector_search(terms, cfg.vector_top) if a not in have]
+        base = len(pool) + 20_000                          # recall-only: vector items rank below every BM25 item on ties
+        pool += [Candidate(a, base + i, 0.0) for i, a in enumerate(extra)]
     return pool
