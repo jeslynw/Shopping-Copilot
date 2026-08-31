@@ -1,4 +1,3 @@
-"""Ask queue, information-gated cutoff, previous-turn-only exclusion. No scenario/override detection feeds anything here."""
 from __future__ import annotations
 
 from .config import Config

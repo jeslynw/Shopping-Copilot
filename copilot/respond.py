@@ -1,4 +1,3 @@
-"""Deterministic customer-facing message with a verifiable explanation. Never asserts 'found it'."""
 from __future__ import annotations
 
 from .extract import Parsed

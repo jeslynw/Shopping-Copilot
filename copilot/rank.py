@@ -1,4 +1,3 @@
-"""Verbatim constraint-satisfaction rerank with category key and popularity tie-break; fully deterministic."""
 from __future__ import annotations
 
 import math

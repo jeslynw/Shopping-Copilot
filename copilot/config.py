@@ -1,4 +1,3 @@
-"""Every layer is a flag; defaults are the shipped configuration (docs/PLAN.md §3n, revised §11 for the LLM layer)."""
 from __future__ import annotations
 
 import os

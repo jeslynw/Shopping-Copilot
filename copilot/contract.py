@@ -1,4 +1,3 @@
-"""Pure-python check of a turn response against docs/agent_api_contract.json (additionalProperties: false everywhere)."""
 from __future__ import annotations
 
 ALLOWED_ATTRIBUTES = {"category", "material", "color", "size", "style", "brand", "budget", "feature", "use_case", "other"}

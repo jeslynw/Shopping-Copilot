@@ -1,9 +1,3 @@
-"""Extraction: simulator-template regexes first, template-free clause fallback second; every constraint carries provenance.
-
-Category resolution is against the finite vocabulary of `coarse_category()` values computed over the catalog:
-exact template → longest exact token-subsequence → order-aware fuzzy (tie SET returned). Never a bag of tokens
-(vocab phrases are permutations/subsets of one another — PLAN.md §5 extract.py).
-"""
 from __future__ import annotations
 
 import difflib
