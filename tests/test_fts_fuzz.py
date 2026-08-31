@@ -1,4 +1,3 @@
-"""MATCH never raises: tokens-only expressions over every public constraint and 5,000 catalog strings."""
 import sqlite3
 
 from copilot.extract import tokens

@@ -1,8 +1,3 @@
-"""Validate agent responses against docs/agent_api_contract.json (pure-python check + jsonschema cross-check when installed).
-
-    python tools/validate_contract.py results_responses.jsonl     # one JSON response per line
-    python -c "from tools.validate_contract import validate; ..."
-"""
 from __future__ import annotations
 
 import json

@@ -1,4 +1,3 @@
-"""§3j — Confidence-gated cutoff: R0…R8, information-gated, degenerate always-top-1; phantom-injection sensitivity; per-session accounting."""
 import random
 from dataclasses import replace
 import common as C

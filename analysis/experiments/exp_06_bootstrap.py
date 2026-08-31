@@ -1,4 +1,3 @@
-"""§3h — Statistical noise: bootstrap CI of the popularity variant; MRR headroom = rank-at-hit distribution."""
 import common as C
 
 cat, S = C.Catalog(), C.load_samples()

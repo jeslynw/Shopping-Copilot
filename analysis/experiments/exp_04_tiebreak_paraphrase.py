@@ -1,4 +1,3 @@
-"""§3f — Tie-break (popularity), soft vs exact matching, paraphrase robustness by extractor, ask order."""
 from dataclasses import replace
 import common as C
 

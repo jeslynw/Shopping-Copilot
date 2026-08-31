@@ -1,12 +1,3 @@
-"""Paraphrase robustness: run the official evaluate() with the simulator's strings replaced by paraphrases.
-
-    python tools/paraphrase_eval.py                       # fixture data/paraphrases.jsonl (from gen_paraphrases.py)
-    python tools/paraphrase_eval.py --synthetic           # built-in template paraphraser (analysis/experiments/common.py)
-    python tools/paraphrase_eval.py --config llm=false    # any Config override, e.g. compare LLM extraction on/off
-
-Monkeypatches initial_message / customer_reply / behavior_for in-process; the evaluator file is never edited.
-The score is a DEV-HARNESS number (labelled as such in the report), not the official local score.
-"""
 from __future__ import annotations
 
 import argparse

@@ -1,17 +1,3 @@
-"""Build EXTRA evaluation sessions from the source dataset (Amazon Reviews 2023, McAuley Lab) — a holdout the public set
-was never tuned on.  The evaluator only needs a target `parent_asin` that exists in the catalog plus a scenario type; the
-shopper's lines are generated from the catalog listing (`intent_card()`), so a session IS its target product.
-
-    .venv/bin/python tools/ext_set.py                 # → data/ext_lastout_1000.jsonl + data/ext_uniform_1000.jsonl
-    .venv/bin/python tools/ext_set.py --n 500
-
-Two sets, both excluding the 200 public targets:
-  * lastout — targets drawn the organizers' way: the LAST purchase of each 5-core reviewer
-              (HF benchmark/5core/last_out/Clothing_Shoes_and_Jewelry.test.csv, streamed until enough rows hit the catalog)
-  * uniform — targets drawn uniformly from the catalog (removes the popularity skew of leave-last-out sampling)
-Scenario mix follows the public set (40 % buying, 40 % browsing, 15 % intent_override, 5 % boundary); user profiles are the
-public ones recycled round-robin (the evaluator passes them to the agent untouched; our agent does not use them).
-"""
 from __future__ import annotations
 
 import argparse

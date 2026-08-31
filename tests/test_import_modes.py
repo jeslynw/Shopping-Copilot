@@ -1,4 +1,3 @@
-"""The three import modes reproduce the same recommendations: harness from repo root, `import agent` from /, copied bundle."""
 import json
 import os
 import shutil

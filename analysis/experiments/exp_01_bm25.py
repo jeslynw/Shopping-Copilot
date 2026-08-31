@@ -1,4 +1,3 @@
-"""§3 — Realistic policy simulation through the REAL evaluate(): V0 (≈starter) … V4 (`other` exploit)."""
 from dataclasses import replace
 import common as C
 

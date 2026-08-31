@@ -69,7 +69,7 @@ verified turn-for-turn against the offline run). A grounded LLM constraint-extra
 Layout: `agent.py` (submission entry file, re-exports the same `Agent`) · `copilot/` (implementation) ·
 `tools/` (evaluation, contract validation, data download) · `tests/` (kit unittest + ours) ·
 `analysis/experiments/` (measured ablation ladder) · `docs/PLAN.md` (build plan) · `docs/results/` (committed scores).
-Tests: `pip install -r requirements-dev.txt && pytest -q`.
+Tests: `pip install -r requirements.txt && pytest -q`.
 
 ## Reproduce Our Results
 
@@ -78,7 +78,7 @@ uv venv --python 3.11 .venv && source .venv/bin/activate   # Python ≥ 3.10 wor
 bash tools/download_data.sh                                  # catalog.jsonl.gz from the kit release → SHA256 check → data/catalog.jsonl
 python3 -m evaluator.local_evaluator                         # TechnicalScore 0.958 (HR@10 1.000 · MRR 0.937 · MTTC 2.155) → results.json
 COPILOT_OFFLINE=1 python3 tools/run_eval.py --profile        # scored-configuration profile (matches docs/results/v1.0.json)
-pip install -r requirements-dev.txt && pytest -q             # 45 tests (≈ 5 min — they re-run the evaluator)
+pip install -r requirements.txt && pytest -q             # 45 tests (≈ 5 min — they re-run the evaluator)
 ```
 
 Reference hardware: all timing and memory numbers in this README and `REPORT.md` were measured on a MacBook Pro
@@ -103,8 +103,9 @@ Switches: `COPILOT_OFFLINE=1` is a hard kill (wins over any key); `COPILOT_LLM=0
 breaker disables the layer and the run completes offline with an unchanged score
 (`tests/test_llm.py::test_offline_flags_do_not_change_results`).
 
-- **Runtime dependencies: none.** The scored path is the Python standard library (SQLite FTS5); `requirements.txt` has nothing
-  to install. Dev/optional extras (`pytest`, `jsonschema`, `openai`, `anthropic`) are in `requirements-dev.txt`.
+- **Runtime dependencies: none.** The scored path is the Python standard library (SQLite FTS5); nothing in
+  `requirements.txt` is needed to run it. Everything listed there is optional — the LLM layer (`openai`,
+  `anthropic`) and dev/test tooling (`pytest`, `jsonschema`).
 - **Network: not required.** With no API key the run is the deterministic core above. With `OPENAI_API_KEY` (or
   `ANTHROPIC_API_KEY`) exported or in a git-ignored `.env`, the LLM layer rewrites the customer-facing `message` only —
   `ask_attribute` and `recommendations` are unchanged by construction (verified live: 83/83 turns identical) — and any
@@ -159,7 +160,7 @@ breaker disables the layer and the run completes offline with an unchanged score
 | Member | Contribution |
 |---|---|
 | Kevin Aldrin Tan (`KevinAldrinTan900`) | Problem analysis and evaluator/catalog profiling; build plan (`docs/PLAN.md`); deterministic core (`copilot/`); measured ablation ladder (`analysis/experiments/`); LLM layer (`copilot/llm.py`); paraphrase fixture and harness; tests; tooling (`tools/`); report. |
-| `jeslynw` | _to fill in_ |
+| `Jeslyn Wangsa` | system architecture diagrams, demo UI - offline/online mode switch, per-layer token and USD cost accounting, per-turn pipeline trace; cost, latency and feasibility disclosure|
 | `tiffabytes` | _to fill in_ |
 | `jessnoellyn` | _to fill in_ |
 

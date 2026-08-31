@@ -1,20 +1,3 @@
-"""Offline CLI transcript of ONE public session through the evaluator's own simulator — recorded for the demo video
-(docs/PLAN.md §6 P5). Nothing here touches the scored path; the agent is the same `copilot.agent.Agent`.
-
-    .venv/bin/python tools/demo.py --session public_0042 --redact-brands
-    .venv/bin/python tools/demo.py --index 7 --paraphrase casual        # fixture paraphrases: clause fallback + gate release
-    .venv/bin/python tools/demo.py --session public_0042 --llm           # message polish on (needs a key); default is offline
-    .venv/bin/python tools/demo.py --list buying                         # sample ids by scenario, to pick a session
-
-Every turn prints the full top-`--top` shelf (default 10) with a movement column so you can watch the list react to
-each answer: `NEW` = not on last turn's shelf, `↑n`/`↓n` = moved up/down n places, `=` = held its rank; a
-`dropped out of the top N` line lists items the last shelf had that this one doesn't.
-
-The simulator functions are the evaluator's (`initial_message`, `customer_reply`, `behavior_for`, `intent_card`,
-`materialize_hidden_fields`, `normalize_recommendations`), imported unmodified; only one sample is run, and the catalog is
-read once for the agent's FTS5 index plus a single streaming pass to fetch the target listing — so a session runs in a
-few seconds. `--redact-brands` masks every shown item's `store` name in titles and messages (video trademark rule).
-"""
 from __future__ import annotations
 
 import argparse

@@ -1,4 +1,3 @@
-"""Slow gates on the full 200 public sessions through the REAL evaluator (≈20 s each)."""
 import json
 import os
 import random

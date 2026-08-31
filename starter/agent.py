@@ -1,8 +1,3 @@
-"""Kit harness entry point: `python -m evaluator.local_evaluator` imports `Agent` from here.
-
-Default → the team agent (`copilot/`). Set `AGENT=baseline` to score the kit's original weak BM25 starter
-(`starter/baseline_agent.py`, unchanged) with the same command — a like-for-like A/B.
-"""
 import os
 import sys
 

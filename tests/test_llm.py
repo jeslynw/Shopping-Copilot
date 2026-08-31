@@ -1,4 +1,3 @@
-"""LLM layer with a fake client: grounding, failure → fallback, breaker, polish post-filter, rerank grounding, invariance, env switch."""
 import json
 import os
 from dataclasses import replace

@@ -1,4 +1,3 @@
-"""§3i — Constraint normalisation (norm(), colour/budget forms, six fields) + self-match test + why-not-#1 analysis."""
 from dataclasses import replace
 import common as C
 from evaluator import local_evaluator as ev

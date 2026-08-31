@@ -1,5 +1,3 @@
-"""Submission entry file (rules: 'one Python agent entry file exporting Agent'). Works from any CWD and when copied
-next to copilot/ into an organizer layout."""
 import os
 import sys
 

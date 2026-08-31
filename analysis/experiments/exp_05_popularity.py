@@ -1,4 +1,3 @@
-"""§3g — Popularity: target skew, lexicographic tie-break vs blends, interaction with paraphrase / extractor."""
 import statistics
 from dataclasses import replace
 import common as C

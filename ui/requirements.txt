@@ -1,0 +1,3 @@
+# Demo UI only — NOT required by the agent or the scored evaluator run.
+flask>=3.0
+flask-cors>=4.0
