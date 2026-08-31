@@ -2,6 +2,60 @@
 
 Build an AI shopping agent that asks useful follow-up questions and recommends the customer's hidden target product within at most 10 turns.
 
+## Our Solution
+
+A seven-stage pipeline — extract → state → build terms → retrieve → rank → policy → respond — scoring
+**0.958** on the 200 public sessions (HR@10 1.000 · MRR 0.937 · MTTC 2.155) against the kit baseline's
+**0.107**.
+
+The agent pairs an OpenAI `gpt-4.1-mini` language layer with a deterministic retrieval core, and the
+deterministic path is what everything falls back to.
+
+Customer messages are parsed by **regex templates** — the simulator's phrasing is matched exactly — with a
+clause parser behind them for anything the templates miss, and `gpt-4.1-mini` available as a third path when
+both fall short. Requirements accumulate into a ledger that is never erased and become an FTS5 query over
+50,000 in-memory products each turn, ranked by verbatim constraint satisfaction, then coarse-category match,
+then a popularity prior. When more than ten items tie on everything the shopper has said, the copilot commits
+to a single pick and asks the question that splits the tie. The model then rewrites the reply so it reads
+naturally.
+
+If the model is slow, unreachable, returns malformed JSON, or no key is set at all, the deterministic path
+completes the turn on its own — same recommendations, same question, unpolished wording.
+
+### The LLM layer — OpenAI `gpt-4.1-mini`
+
+With `OPENAI_API_KEY` set, a language layer runs on top of that core. Anthropic is supported through the same
+interface (`claude-haiku-4-5` / `claude-sonnet-5`); the provider is auto-detected from whichever key is present.
+
+- **Message polish — on by default with a key.** The deterministic pipeline drafts the reply, then
+  `gpt-4.1-mini` rewrites it to read naturally, under a system prompt that forbids inventing products, prices,
+  claims or store names and requires the closing question to survive unchanged in meaning. It rewrites
+  *wording only* — never which items are recommended, never which attribute is asked. Roughly 220 → 57 tokens
+  and $0.0002 per turn, about **$0.30** to run all 800 private sessions.
+- **Grounded extraction — flag, measured, off.** When no template matches, `gpt-4.1-mini` can parse the
+  message into constraints under a strict JSON schema, with every returned string verified to be a verbatim
+  substring of what the customer actually wrote; anything not literally present is discarded. On the
+  paraphrase fixture it scored **0.918** against the deterministic extractor's **0.924**, so it ships as a
+  flag rather than a default.
+- **Reranking — flag, measured, off.** 0.955 vs 0.958, at +1.5 s per turn.
+
+**Determinism is the primary path — and also the fallback.** Every LLM call runs inside a 4-second per-turn
+budget, and three failures within twenty calls trip a circuit breaker that disables the layer for the rest of
+the run. Timeouts, malformed JSON, ungrounded constraints and API errors all degrade to the deterministic
+result instead of propagating. Because the language layer never touches retrieval or ranking, the per-session
+results are **identical with it on or off** — the same 200 hits at the same ranks — so a dead key, a rate
+limit, or the organizer disabling network access costs the score nothing.
+
+**With no key at all the agent still runs**: no runtime dependencies, no network, pure standard library
+(SQLite FTS5). That is the configuration we submit for scoring.
+
+Every design decision is backed by a measured ablation row, including the ones we rejected — LLM reranking,
+LLM extraction, vector retrieval and profile personalization were each built, measured, found worse, and kept
+as flags (see *Limitations* below).
+
+`ui/` replays any public session in a browser — the conversation, the shelf reordering turn by turn, the
+pipeline trace, and token/USD cost — for anyone who would rather watch the agent than read its output.
+
 ## What You Receive
 
 - A frozen catalog of 50,000 products from the `Clothing_Shoes_and_Jewelry` category of Amazon Reviews 2023.
@@ -68,7 +122,8 @@ verified turn-for-turn against the offline run). A grounded LLM constraint-extra
 
 Layout: `agent.py` (submission entry file, re-exports the same `Agent`) · `copilot/` (implementation) ·
 `tools/` (evaluation, contract validation, data download) · `tests/` (kit unittest + ours) ·
-`analysis/experiments/` (measured ablation ladder) · `docs/PLAN.md` (build plan) · `docs/results/` (committed scores).
+`analysis/experiments/` (measured ablation ladder) · `docs/PLAN.md` (build plan) · `docs/results/` (committed scores) ·
+`ui/` (demo).
 Tests: `pip install -r requirements.txt && pytest -q`.
 
 ## Reproduce Our Results
@@ -120,6 +175,20 @@ breaker disables the layer and the run completes offline with an unchanged score
 - Ablation ladder from code: `python3 tools/ablate.py` (`--reference` adds the layers that exist only in
   `analysis/experiments/`; `--paraphrase` runs the same rows under the paraphrase fixture). Demo transcript for the video:
   `python3 tools/demo.py --session public_0042 --redact-brands` (offline, a few seconds).
+
+## Demo UI
+
+`ui/` replays a public session in the browser — conversation, shelf reordering, per-turn trace, and token/USD
+cost. Dropdowns switch offline/online and the extraction path (templates / template→LLM / LLM only) per run.
+
+```bash
+pip install -r ui/requirements.txt          # flask — demo only, not an agent dependency
+cd ui/web && npm install && npm run build && cd ../..
+python3 ui/server.py                        # → http://localhost:5000
+```
+
+Nothing in `copilot/` imports `ui/`; it calls the same `Agent.respond()` the evaluator calls, and messages
+come from the evaluator's own simulator. See `ui/README.md`.
 
 ## Limitations and What We'd Improve
 
