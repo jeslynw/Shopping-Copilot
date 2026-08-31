@@ -1,7 +1,3 @@
-"""Memory-lean catalog: FTS5 stores the text (starter schema + weights); Python keeps only small per-product scalars.
-
-Pool text for the matcher is fetched from FTS5 by rowid each turn (PLAN.md §5 catalog.py, R13).
-"""
 from __future__ import annotations
 
 import gzip

@@ -1,9 +1,3 @@
-"""Shopping Copilot Agent — deterministic, offline-capable core with a fail-safe Claude layer (docs/PLAN.md §5, §11).
-
-Per turn: extract (templates → LLM-grounded → clause) → apply_reply → build_terms → retrieve → rank (→ LLM rerank, ablation)
-→ exclusion → cutoff → ask → message (→ LLM polish) → validate.  `__init__`, `reset`, `respond` never raise; every response
-has exactly the four contract keys.  Without an API key (or with COPILOT_OFFLINE=1) the LLM layer is simply off.
-"""
 from __future__ import annotations
 
 import time

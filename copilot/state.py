@@ -1,4 +1,3 @@
-"""Accumulate-only session state. Nothing here is ever erased on an intent override."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

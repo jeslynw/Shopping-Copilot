@@ -1,4 +1,3 @@
-"""FTS5 OR-query over ≤ max_terms alphanumeric tokens (never raw text into MATCH); pool = top-N ∪ category members."""
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,14 +1,3 @@
-"""LLM layer — OpenAI or Anthropic, on whenever an API key is present (docs/PLAN.md §11). Three uses, all fail-safe and grounded:
-
-  extract(...)  — when no simulator template matched (organizer paraphrasing), return the customer's constraints as
-                  VERBATIM spans of the message plus a category chosen from offered candidates; anything not grounded
-                  is dropped. Provenance "llm" → the cutoff gate releases to a full shelf (never top-1 on LLM input).
-  polish(...)   — rewrite the customer-facing `message` only; never touches ask_attribute or recommendations.
-  rerank(...)   — ABLATION flag: order the top tier; only offered asins are accepted, missing ones are appended.
-
-Never raises. One shared per-turn wall-clock budget (default 4 s), max_retries=0, failure budget 3 per 20 calls →
-breaker opens for the run. Usage is accounted from the API response into `turn_usage`.
-"""
 from __future__ import annotations
 
 import json
