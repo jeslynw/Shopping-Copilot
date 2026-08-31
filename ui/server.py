@@ -151,13 +151,31 @@ def llm_availability() -> tuple[bool, str, str]:
     return True, "", provider
 
 
-def set_mode(agent, online: bool) -> None:
-    """Flip the LLM layer for the next run. `Agent._turn` gates every LLM use on `llm.enabled`, so toggling
-    that one attribute switches the whole layer without rebuilding the agent (a 7 s catalog reload)."""
+def set_mode(agent, online: bool, extractor: str = "shipped") -> None:
+    """Configure the next run. `Agent._turn` gates every LLM use on `llm.enabled`, and reads extraction
+    settings off `cfg`, so swapping those switches the whole layer without rebuilding the agent (an 8 s
+    catalog reload). Config is frozen, so we replace it rather than mutate — on both the agent and the LLM,
+    which holds its own reference.
+
+    extractor:
+      "shipped"  — hybrid: simulator templates, clause fallback. The LLM never sees extraction. (SCORED)
+      "fallback" — hybrid + llm_extract: templates first, LLM only when no template matched, clause as the
+                   floor beneath it. This is the ablation measured at 0.918 vs deterministic 0.924 on the
+                   paraphrase fixture. On the clean public set templates always match, so the LLM is never
+                   reached and this behaves identically to "shipped" — the difference only shows under
+                   paraphrased input.
+      "llm"      — templates off entirely. Every message goes to the LLM, clause as the floor. More
+                   aggressive than anything measured; useful for seeing what the model does unaided.
+    """
+    from dataclasses import replace
+    llm_extract = extractor in ("llm", "fallback")
+    cfg = replace(agent.cfg, extractor="clause" if extractor == "llm" else "hybrid", llm_extract=llm_extract)
+    agent.cfg = cfg
     llm = agent.llm
     if llm is None:
         return
-    llm.enabled = bool(online) and bool(agent.cfg.llm_polish or agent.cfg.llm_extract or agent.cfg.llm_rerank)
+    llm.cfg = cfg
+    llm.enabled = bool(online) and bool(cfg.llm_polish or cfg.llm_extract or cfg.llm_rerank)
     if llm.enabled:
         llm.breaker_open = False      # a previous failed online run must not poison this one
         llm.recent.clear()
@@ -225,15 +243,18 @@ def run(session_id: str):
     """Stream one full session as SSE: `turn` events, then a final `done` event."""
     top = max(1, min(int(request.args.get("top", 10)), 10))
     online = request.args.get("mode", "offline") == "online"
+    extractor = request.args.get("extract", "shipped")
     s = boot()
     sample = next((x for x in s["samples"] if x["sample_id"] == session_id), None)
     if sample is None:
         return jsonify({"error": f"no session {session_id}"}), 404
+    if extractor in ("llm", "fallback") and not online:
+        return jsonify({"error": "LLM extraction needs online mode"}), 400
     if online:
         available, reason, _ = llm_availability()
         if not available:
             return jsonify({"error": f"online mode unavailable: {reason}"}), 400
-    on_agent_thread(set_mode, s["agent"], online)
+    on_agent_thread(set_mode, s["agent"], online, extractor)
 
     def event(kind: str, payload: dict) -> str:
         return f"event: {kind}\ndata: {json.dumps(payload, ensure_ascii=False)}\n\n"
@@ -259,6 +280,7 @@ def run(session_id: str):
             "intent_card": {"hard": card.get("hard_constraints", []), "soft": card.get("soft_preferences", [])},
             "llm_enabled": bool(agent.llm and agent.llm.enabled),
             "mode": "online" if online else "offline",
+            "extractor": extractor,
             "models": ({"extract": agent.llm.extract_model, "polish": agent.llm.polish_model}
                        if (online and agent.llm) else {}),
         })

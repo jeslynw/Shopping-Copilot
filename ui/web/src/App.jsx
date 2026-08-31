@@ -9,6 +9,7 @@ export default function App() {
   const [scenario, setScenario] = useState("all");
   const [picked, setPicked] = useState("");
   const [mode, setMode] = useState("offline");
+  const [extract, setExtract] = useState("shipped");
   const [speed, setSpeed] = useState(1);
   const [running, setRunning] = useState(false);
   const [meta, setMeta] = useState(null);
@@ -26,7 +27,7 @@ export default function App() {
   useEffect(() => {
     fetch("/api/health").then((r) => r.json()).then((h) => {
       setHealth(h);
-      if (!h.llm_available) setMode("offline");   // never leave the picker on a mode the server cannot run
+      if (!h.llm_available) { setMode("offline"); setExtract("shipped"); }   // never offer a mode the server cannot run
     }).catch(() => setError("API not reachable. Is ui/server.py running?"));
   }, []);
 
@@ -68,7 +69,7 @@ export default function App() {
     finished.current = false;
     setRunning(true);
 
-    const es = new EventSource(`/api/run/${picked}?top=10&mode=${mode}`);
+    const es = new EventSource(`/api/run/${picked}?top=10&mode=${mode}&extract=${extract}`);
     source.current = es;
     es.addEventListener("start", (e) => setMeta(JSON.parse(e.data)));
     es.addEventListener("turn", (e) => queue.current.push({ kind: "turn", data: JSON.parse(e.data) }));
@@ -93,7 +94,7 @@ export default function App() {
     };
 
     timer.current = setInterval(() => drain(), 2600 / speedRef.current);
-  }, [picked, mode, stop, drain, closeStream]);
+  }, [picked, mode, extract, stop, drain, closeStream]);
 
   // Restart the pacing timer when the speed slider moves mid-run.
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function App() {
           </select>
           <select
             value={mode}
-            onChange={(e) => setMode(e.target.value)}
+            onChange={(e) => { setMode(e.target.value); if (e.target.value !== "online") setExtract("shipped"); }}
             disabled={running}
             className={`mode ${mode}`}
             title={health && !health.llm_available ? health.llm_reason : "offline is the scored configuration"}
@@ -137,6 +138,17 @@ export default function App() {
             <option value="online" disabled={health ? !health.llm_available : true}>
               Online{health && !health.llm_available ? " (unavailable)" : ""}
             </option>
+          </select>
+          <select
+            value={extract}
+            onChange={(e) => setExtract(e.target.value)}
+            disabled={running || mode !== "online"}
+            className="mode"
+            title={mode !== "online" ? "LLM extraction needs online mode" : "who parses the customer's message"}
+          >
+            <option value="shipped">Templates</option>
+            <option value="fallback">Template &rarr; LLM</option>
+            <option value="llm">LLM only</option>
           </select>
           <button className="run" onClick={running ? stop : run} disabled={!picked}>
             {running ? "■ Stop" : "▶ Run session"}
@@ -207,14 +219,12 @@ function Turn({ t }) {
 
       <div className="row-left">
         <div className="understood">
-          <span className={`pill p-${t.trace.extract.path}`}>{t.trace.extract.path}</span>
           <span className="pill">{t.trace.extract.kind}</span>
           {t.trace.extract.new_constraints.length > 0 ? (
             t.trace.extract.new_constraints.map((c, i) => <span key={i} className="chip new">+ {c.text}</span>)
           ) : (
             <span className="chip muted">no new constraint</span>
           )}
-          <span className="ledger">ledger {t.trace.state.ledger_size}</span>
         </div>
       </div>
 
