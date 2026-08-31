@@ -81,6 +81,11 @@ COPILOT_OFFLINE=1 python3 tools/run_eval.py --profile        # scored-configurat
 pip install -r requirements-dev.txt && pytest -q             # 45 tests (≈ 5 min — they re-run the evaluator)
 ```
 
+Reference hardware: all timing and memory numbers in this README and `REPORT.md` were measured on a MacBook Pro
+(Apple M3 Pro, 11 cores, 18 GB RAM, macOS 26.6) with Python 3.11. Scores are hardware-independent (deterministic,
+verified in CI on a fresh `ubuntu-latest` clone); only wall-clock latency shifts with the machine — the CI p95 gate
+is relaxed to 400 ms via `COPILOT_P95_GATE_MS` vs 67.5 ms measured locally.
+
 ### Offline vs online (LLM) runs
 
 The LLM layer is **on by default whenever an API key is present** and off otherwise — same score either way, by
