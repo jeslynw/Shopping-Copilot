@@ -1,18 +1,3 @@
-"""Regenerate the ablation ladder from `copilot.Config` flags — the table in REPORT.md comes from code, not by hand
-(docs/PLAN.md §3, §6 P5, §9). Every row runs through the OFFICIAL evaluate() on the 200 public sessions.
-
-    .venv/bin/python tools/ablate.py                        # ladder + not-shipped rows (deterministic core, LLM off)
-    .venv/bin/python tools/ablate.py --reference            # + rows that only exist in the reference implementation
-                                                            #   (analysis/experiments/common.py): hard category filter,
-                                                            #   `other` exploit, detection-gated exclusion
-    .venv/bin/python tools/ablate.py --paraphrase           # same rows under the paraphrase fixture (dev harness)
-    .venv/bin/python tools/ablate.py --paraphrase --llm-extract   # adds the grounded LLM-extraction row (needs a key)
-    .venv/bin/python tools/ablate.py --per-session          # cutoff accounting: information-gated cutoff vs always top-10
-    .venv/bin/python tools/ablate.py --rows shipped,top1,no_pop --limit 40   # subset / smoke run
-
-Prints a markdown table and writes docs/results/ablation.json (--output). Rows are labelled; the "not shipped" block is
-disclosed deliberately (always-top-1 is a metric artefact, naive exclusion kills override sessions, …).
-"""
 from __future__ import annotations
 
 import argparse

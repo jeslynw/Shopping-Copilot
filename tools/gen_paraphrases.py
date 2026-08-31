@@ -1,16 +1,3 @@
-"""Dev-time, run once: paraphrase every simulator string of the public set with an LLM (OpenAI or Anthropic).
-
-Provider from OPENAI_API_KEY / ANTHROPIC_API_KEY (or COPILOT_LLM_PROVIDER; .env is read). OpenAI → direct calls with a
-thread pool; Anthropic → Message Batches API.
-
-    python tools/gen_paraphrases.py --dry-run                # count strings / requests, no API call
-    python tools/gen_paraphrases.py --styles 4               # ~4k requests, Haiku, a few minutes, ~$1–2
-    python tools/gen_paraphrases.py --resume msgbatch_xxx    # fetch results of an existing batch
-
-Output: data/paraphrases.jsonl  {"text": <exact simulator string>, "style": <name>, "paraphrase": <text>}
-Product facts (constraint values) must survive verbatim inside the paraphrase; a paraphrase that breaks one is dropped
-and counted. tools/paraphrase_eval.py reads only this fixture — deterministic, offline, CI-runnable.
-"""
 from __future__ import annotations
 
 import argparse

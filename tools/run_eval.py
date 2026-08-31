@@ -1,10 +1,3 @@
-"""Run the OFFICIAL evaluator on copilot.agent.Agent with contract validation on every response.
-
-    .venv/bin/python tools/run_eval.py [--profile] [--output results/dev.json] [--limit 40] [--config key=value ...]
-
-The evaluator module is imported unmodified from evaluator/local_evaluator.py; only the Agent object differs from
-`python -m evaluator.local_evaluator` (which goes through the starter/agent.py shim and gives the same numbers).
-"""
 from __future__ import annotations
 
 import argparse

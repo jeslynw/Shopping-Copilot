@@ -1,3 +1,10 @@
-# No runtime dependencies. The official scored configuration (deterministic core, LLM off) is pure standard library:
-# sqlite3 with FTS5 (bundled with CPython on macOS/Linux/Windows), json, re, difflib. Python 3.10+ (tested on 3.11 and 3.14).
-# Optional LLM layer: pip install openai (or anthropic); auto-enabled when the matching API key is set (see README). Dev extras: requirements-dev.txt.
+# The official scored configuration (deterministic core, LLM off) has NO runtime dependencies — it is pure
+# standard library: sqlite3 with FTS5 (bundled with CPython on macOS/Linux/Windows), json, re, difflib.
+# Python 3.10+ (tested on 3.11 and 3.14).
+#
+# Everything below is OPTIONAL: the LLM layer (auto-enabled only when a matching API key is set, see README)
+# and the dev/test tooling. Install with: pip install -r requirements.txt
+pytest>=8
+jsonschema>=4
+openai>=1.50
+anthropic>=1.2

@@ -28,3 +28,9 @@ analysis/experiments/results/*.log
 analysis/experiments/results/run_all.out
 results_paraphrase.json
 data/paraphrases.jsonl.tmp
+# --- demo UI (not part of the submitted agent) ---
+.conda/
+ui/web/node_modules/
+ui/web/dist/
+# ablation scratch output
+scratch_*.json

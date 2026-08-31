@@ -1,4 +1,3 @@
-"""§3c — Constraint-satisfaction rerank on the BM25 top-N: V5 (#verbatim matches) → V6 (+category key) → V7 (+phrases) → V8 (pool 1000)."""
 from dataclasses import replace
 import common as C
 

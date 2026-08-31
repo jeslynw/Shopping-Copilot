@@ -1,4 +1,3 @@
-"""§3n — The exact shipped configuration and its neighbours; the final ladder; bootstrap CI; paraphrase headline."""
 from dataclasses import replace
 import common as C
 from evaluator import local_evaluator as ev

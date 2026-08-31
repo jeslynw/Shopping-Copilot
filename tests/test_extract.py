@@ -1,4 +1,3 @@
-"""Category matcher: 200 openers × 3 templates resolve exactly (template path AND vocabulary path); reply shapes parse."""
 from copilot.extract import extract, tokens
 
 

@@ -1,4 +1,3 @@
-"""Self-match: the targets' own constraints match their own six-field text after norm(); ranking is deterministic."""
 from copilot.config import Config
 from copilot.rank import compile_matchers
 from copilot.state import Constraint

@@ -1,4 +1,3 @@
-"""§3k — Seen-set exclusion (implicit negative feedback): naive (lethal) vs override-safe vs turn≥5 vs previous-turn-only; inverse detection test."""
 from dataclasses import replace
 import common as C
 

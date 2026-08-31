@@ -1,4 +1,3 @@
-"""Every response is contract-valid; adversarial inputs never raise; ask_attribute is never null."""
 from tests.conftest import PROFILE
 from tools.validate_contract import validate
 

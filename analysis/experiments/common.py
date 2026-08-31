@@ -1,22 +1,3 @@
-"""Shared harness for the PLAN.md §3 experiments — the reference implementation of every layer.
-
-Everything runs through the REAL vendored evaluator (`evaluator/local_evaluator.py`, never
-modified) on the 200 public sessions.  Each `exp_NN_*.py` builds one `Catalog`, evaluates a
-list of `Config` variants with `run()` and prints a markdown table via `table()`.
-
-Layers (each a `Config` flag, see PLAN.md §3 / §5):
-  dialog policy   ask queue, boundary re-ask, re-ask-on-2, `other` exploit
-  extraction      template regexes -> clause fallback, provenance tags; vocab category matcher
-  retrieval       FTS5 OR-query (starter schema + weights), token cap, DF ordering, phrase terms,
-                  hard category filter, pool size, pool ∪ category members
-  rerank          verbatim constraint satisfaction, category sort key, popularity tie-break / blend,
-                  norm() matcher over three or six fields, soft matching
-  cutoff          R0..R8, information-gated, always-top-1 (degenerate reference row)
-  exclusion       naive / override-safe / turn>=5 / previous-turn-only
-
-Regenerated on 28 Aug 2026 from the §3 specifications (the original in-session scripts were
-not persisted); numbers are re-measured, not copied.
-"""
 from __future__ import annotations
 
 import difflib
