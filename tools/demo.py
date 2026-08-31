@@ -6,6 +6,10 @@
     .venv/bin/python tools/demo.py --session public_0042 --llm           # message polish on (needs a key); default is offline
     .venv/bin/python tools/demo.py --list buying                         # sample ids by scenario, to pick a session
 
+Every turn prints the full top-`--top` shelf (default 10) with a movement column so you can watch the list react to
+each answer: `NEW` = not on last turn's shelf, `↑n`/`↓n` = moved up/down n places, `=` = held its rank; a
+`dropped out of the top N` line lists items the last shelf had that this one doesn't.
+
 The simulator functions are the evaluator's (`initial_message`, `customer_reply`, `behavior_for`, `intent_card`,
 `materialize_hidden_fields`, `normalize_recommendations`), imported unmodified; only one sample is run, and the catalog is
 read once for the agent's FTS5 index plus a single streaming pass to fetch the target listing — so a session runs in a
@@ -24,6 +28,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+
+for _stream in (sys.stdout, sys.stderr):        # box-drawing / arrow glyphs need UTF-8 even on a cp1252 console
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 
 CATALOG = ROOT / "data" / "catalog.jsonl"
 DATASET = ROOT / "data" / "public_set.jsonl"
@@ -57,6 +67,18 @@ def redactor(stores: set[str]):
 
 def wrap(prefix: str, text: str) -> str:
     return textwrap.fill(" ".join(text.split()), WIDTH, initial_indent=prefix, subsequent_indent=" " * len(prefix))
+
+
+def shelf_delta(asin: str, rank: int, prev: list[str]) -> str:
+    """One-token movement tag for a shelf item versus the previous turn's shelf."""
+    if not prev:
+        return ""
+    if asin not in prev:
+        return "NEW"
+    was = prev.index(asin) + 1
+    if was == rank:
+        return "="
+    return f"{'↑' if was > rank else '↓'}{abs(was - rank)}"
 
 
 def main() -> int:
@@ -133,6 +155,7 @@ def main() -> int:
     msg = ev.initial_message(eff, category, disclosed)
     hit_turn = best_rank = None
     turn_ms: list[float] = []
+    prev_recs: list[str] = []            # last turn's shelf, for the movement column
     for turn in range(1, ev.MAX_TURNS + 1):
         print(f"\n── turn {turn} " + "─" * (WIDTH - 10))
         print(wrap("customer › ", msg))
@@ -175,15 +198,22 @@ def main() -> int:
         shelf = f"shelf: {len(recs)} item{'s' if len(recs) != 1 else ''}"
         if len(recs) == 1 and turn <= 3:
             shelf += " — many candidates tie on everything stated so far, so the copilot commits to one pick and asks the tie-splitting question"
-        print(f"  ask         {out['ask_attribute']}   ·   {shelf}   ·   {ms:.0f} ms")
+        churn = "" if not prev_recs else f"   ·   vs. last turn: {len(set(recs[:args.top]) - set(prev_recs[:args.top]))} new"
+        print(f"  ask         {out['ask_attribute']}   ·   {shelf}{churn}   ·   {ms:.0f} ms")
         for i, a in enumerate(recs[:args.top], 1):
             title, store = titles.get(a, ("", ""))
             title = " ".join(str(title).split())[:70]
             why = f"  matched on: {'; '.join(repr(m) for m in matched.get(a, ())[:3])}" if matched.get(a) else ""
             mark = "  ◀ target" if (a == target and (args.reveal or (override_applied and a == target))) else ""
-            print(f"    {i:>2}. {a}  ★{cat.pop.get(a, 0):>7,} reviews  {redact(title)}{why}{mark}")
+            delta = shelf_delta(a, i, prev_recs)
+            print(f"    {i:>2}. {delta:<4} {a}  ★{cat.pop.get(a, 0):>7,} reviews  {redact(title)}{why}{mark}")
         if len(recs) > args.top:
             print(f"    … {len(recs) - args.top} more")
+        if prev_recs and len(recs) >= args.top:
+            gone = [x for x in prev_recs[:args.top] if x not in recs[:args.top]]
+            if gone:
+                print(f"    dropped out of the top {args.top}: {', '.join(gone)}")
+        prev_recs = list(recs)
 
         if override_applied and target in recs:
             best_rank, hit_turn = recs.index(target) + 1, turn

@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import json
 import platform
-import resource
 import sqlite3
 import sys
 import time
@@ -26,7 +25,15 @@ from copilot.config import Config, from_env  # noqa: E402
 from tools.validate_contract import validate  # noqa: E402
 
 
+try:
+    import resource  # Unix only; --profile RSS reporting degrades gracefully without it (e.g. on Windows)
+except ImportError:
+    resource = None
+
+
 def rss_mb() -> float:
+    if resource is None:
+        return 0.0
     r = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     return r / (1024 * 1024) if platform.system() == "Darwin" else r / 1024
 
