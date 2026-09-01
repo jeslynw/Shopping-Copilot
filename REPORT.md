@@ -46,19 +46,34 @@ The kit's customer is a deterministic rule function, not a person. Reading it (`
 ## 3. Architecture
 
 ```mermaid
-flowchart LR
-  U[customer message] --> E[extract<br/>templates → clause fallback<br/>category vs coarse_category vocab<br/>provenance-tagged]
-  E --> S[(session state<br/>constraint ledger — accumulate only)]
-  S --> Q[build_terms<br/>≤ 32 tokens, rarest first]
-  Q --> R[FTS5 BM25 top-300<br/>ORDER BY bm25, parent_asin]
-  R --> K[rank<br/>#verbatim matches ↓ · category ↓ · popularity ↓ · bm25 · asin]
-  K --> X[exclude last turn's shelf]
-  X --> C[cutoff<br/>tier > 10 & turn ≤ 3 & template-provenance → 1 item<br/>else full shelf]
-  C --> A[ask queue<br/>feature → material → color → style → size → use_case → budget]
-  A --> M[message + 'matched on: …']
-  M -. optional, message only .-> L[LLM polish<br/>4 s budget · breaker · post-filter]
-  M --> O{{message · ask_attribute · recommendations · usage}}
+flowchart TB
+  R["reset(session_id, user_profile)<br/>fresh SessionState · prior sessions dropped"] --> U
+  U["customer message · turn n"] --> E
+  E["extract<br/>template regexes → clause floor → LLM override<br/>deterministic exact category wins · clause kept if LLM returns none"] --> S
+  S[("constraint ledger<br/>accumulate-only — never erased, including on intent override")] --> Q
+  Q["build_terms<br/>new constraints first · rarest-first · ≤ 32 tokens"] --> RT
+  RT["FTS5 BM25 → top-300 pool<br/>title 6.0 / categories 4.0 / features 2.5 / description 1.0<br/>tokens only — raw text never reaches MATCH"] --> K
+  K["rank → tier width<br/>−matches · −category · −profile · −popularity · bm25_rank · parent_asin"] --> X
+  X["exclusion — PREVIOUS turn only<br/>never cumulative: a pre-override hit does not count"] --> C
+  C["cutoff<br/>tier > 10 AND turn ≤ 3 AND all-template → show 1 and ask<br/>otherwise → show 10"] --> A
+  A["ask queue<br/>feature → material → color → style → size → use_case → budget<br/>skip consumed · re-ask once after a boundary reply"] --> M
+  M["build_message + verifiable 'matched on: …'"] --> O
+  O{{"message · ask_attribute · recommendations · usage"}}
+  O -->|"no hit → simulator answers ask_attribute · turns 1-10"| U
+
+  E -. "no template matched" .-> LE["llm.extract<br/>grounded spans only<br/>None → clause floor stands"]
+  K -. "tier > 1" .-> LR["llm.rerank<br/>orders the tied tier · offered ASINs only<br/>None → deterministic order stands"]
+  M -. "every turn" .-> LP["llm.polish<br/>text only · URLs and store names filtered<br/>None → template message stands"]
+  LE -. "3 failures / 20 calls" .-> B
+  LR -. "3 failures / 20 calls" .-> B
+  LP -. "3 failures / 20 calls" .-> B
+  B["circuit breaker — latches → offline for the rest of the run"]
 ```
+
+**Online is the default; offline is the fallback.** The three dotted branches are the shipped configuration
+(`llm_extract` · `llm_rerank` · `llm_polish` all `true`). Each is an *override* of a result the spine has
+already computed, so any failure — no key, no SDK, connection error, budget overrun, unparseable output —
+leaves the deterministic result standing. Only the breaker is sticky.
 
 | module | role | guarantee |
 |---|---|---|
@@ -69,7 +84,7 @@ flowchart LR
 | `copilot/rank.py` | exact verbatim satisfaction over the evaluator's six search fields (`norm()`: casefold + whitespace, both `key: value` forms, colour/budget forms); sort key `(-n_match, -cat_match, -rating_number, bm25_rank, parent_asin)`; `tier_size` = width of the top tier; per-item explanation = matched constraints | fully deterministic; 800/800 public constraints self-match their target |
 | `copilot/policy.py` | fixed ask queue (skips consumed, re-asks after a boundary reply); information-gated cutoff; previous-turn-only exclusion | no scenario/override detection anywhere in the scoring path |
 | `copilot/respond.py` | deterministic message with a verifiable "matched on" explanation; never asserts "found it" | |
-| `copilot/llm.py` | OpenAI or Anthropic provider, on iff a key is present; polishes `message` only; 4 s per-turn budget, `max_retries=0`, failure budget 3/20 → breaker | structurally cannot touch `ask_attribute` / `recommendations` |
+| `copilot/llm.py` | OpenAI (default `gpt-4.1-mini`) or Anthropic provider, **on by default**; three stages — grounded extraction, tied-tier rerank, message polish; 12 s per-turn budget, `temperature=0`, `max_retries=0`, failure budget 3/20 → breaker | every stage is an override of an already-computed deterministic result; a failure of any kind leaves the spine standing |
 | `copilot/agent.py` | `__init__`/`reset`/`respond` never raise; every response has exactly the 4 contract keys; `state.prev` written only after the response validates and the turn is under budget | exception = miss is designed out |
 | `agent.py`, `starter/agent.py` | shims (`sys.path` bootstrap) so the kit command runs unmodified from any CWD | 3 import modes tested |
 

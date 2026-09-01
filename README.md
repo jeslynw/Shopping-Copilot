@@ -228,10 +228,10 @@ come from the evaluator's own simulator. See `ui/README.md`.
 
 | Member | Contribution |
 |---|---|
-| Kevin Aldrin Tan (`KevinAldrinTan900`) | Problem analysis and evaluator/catalog profiling; build plan (`docs/PLAN.md`); deterministic core (`copilot/`); measured ablation ladder (`analysis/experiments/`); LLM layer (`copilot/llm.py`); paraphrase fixture and harness; tests; tooling (`tools/`); report. |
-| `Jeslyn Wangsa` | system architecture diagrams, demo UI - offline/online mode switch, per-layer token and USD cost accounting, per-turn pipeline trace; cost, latency and feasibility disclosure|
-| `tiffabytes` | _to fill in_ |
-| `jessnoellyn` | _to fill in_ |
+| Kevin Aldrin Tan (`KevinAldrinTan900`) | Problem analysis, evaluator/catalog profiling, deterministic core workflow, measured ablation ladder, paraphrase fixture and harness, report.|
+| Jeslyn Wangsa (`Jeslyn Wangsa`) | System architecture design, workflow diagram, demo UI (offline/online mode switch, per-layer token and USD cost accounting, per-turn pipeline trace, cost, latency and feasibility disclosure), report.|
+| Tiffany Wynona Japara (`tiffabytes`) | Starter kit exploration, online architecture implementation, memory session management, workflow diagram, report.|
+| Jessica Noellyn Japara (`jessnoellyn` )| Starter kit exploration, offline architecture implementation, report, recording. |
 
 Build timeline (Devpost "new & existing work" rule): 28 Aug 2026 — planning, kit vendoring, catalog profiling and the
 experiment scripts; from 29 Aug 12:00 SGT (challenge start) — the `copilot/` package, LLM layer, paraphrase fixture,
