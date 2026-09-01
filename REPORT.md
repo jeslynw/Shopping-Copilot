@@ -70,10 +70,15 @@ flowchart TB
   B["circuit breaker — latches → offline for the rest of the run"]
 ```
 
-**Online is the default; offline is the fallback.** The three dotted branches are the shipped configuration
-(`llm_extract` · `llm_rerank` · `llm_polish` all `true`). Each is an *override* of a result the spine has
-already computed, so any failure — no key, no SDK, connection error, budget overrun, unparseable output —
-leaves the deterministic result standing. Only the breaker is sticky.
+**The three dotted branches are the LLM layer.** It switches on automatically when an API key is present
+(`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`); `llm_polish` runs by default, and `llm_extract` and `llm_rerank`
+are one flag each. Every stage is an *override* of a result the deterministic spine has already computed, so
+any failure — no key, no SDK, connection error, budget overrun, unparseable output — leaves that result
+standing. Only the breaker is sticky.
+
+That inversion is the whole reliability argument: the model is never on the critical path, so an outage costs
+wording, not correctness. It is also why the scored run is reproducible while still being able to use a model
+(§8, §9).
 
 | module | role | guarantee |
 |---|---|---|
@@ -84,7 +89,7 @@ leaves the deterministic result standing. Only the breaker is sticky.
 | `copilot/rank.py` | exact verbatim satisfaction over the evaluator's six search fields (`norm()`: casefold + whitespace, both `key: value` forms, colour/budget forms); sort key `(-n_match, -cat_match, -rating_number, bm25_rank, parent_asin)`; `tier_size` = width of the top tier; per-item explanation = matched constraints | fully deterministic; 800/800 public constraints self-match their target |
 | `copilot/policy.py` | fixed ask queue (skips consumed, re-asks after a boundary reply); information-gated cutoff; previous-turn-only exclusion | no scenario/override detection anywhere in the scoring path |
 | `copilot/respond.py` | deterministic message with a verifiable "matched on" explanation; never asserts "found it" | |
-| `copilot/llm.py` | OpenAI (default `gpt-4.1-mini`) or Anthropic provider, **on by default**; three stages — grounded extraction, tied-tier rerank, message polish; 12 s per-turn budget, `temperature=0`, `max_retries=0`, failure budget 3/20 → breaker | every stage is an override of an already-computed deterministic result; a failure of any kind leaves the spine standing |
+| `copilot/llm.py` | OpenAI (default `gpt-4.1-mini`) or Anthropic provider, on automatically when a key is present; `llm_polish` by default, `llm_extract` and `llm_rerank` behind one flag each; 4 s per-turn budget, `max_retries=0`, failure budget 3/20 → breaker | every stage is an override of an already-computed deterministic result; a failure of any kind leaves the spine standing |
 | `copilot/agent.py` | `__init__`/`reset`/`respond` never raise; every response has exactly the 4 contract keys; `state.prev` written only after the response validates and the turn is under budget | exception = miss is designed out |
 | `agent.py`, `starter/agent.py` | shims (`sys.path` bootstrap) so the kit command runs unmodified from any CWD | 3 import modes tested |
 
@@ -134,7 +139,7 @@ leaves the deterministic result standing. Only the breaker is sticky.
 | **all** | **200** | **1.000** | **0.937** | **2.155** |
 
 Hit-turn distribution `{1: 70, 2: 69, 3: 35, 4: 12, 5: 14}` (the turn-5 block is the override sessions, which can only
-score from the override turn on); rank at hit `{1: 180, 2: 9, 3: 5, 4: 3, 5: 1, 6: 1, 8: 1}`. Boundary MRR is the known
+score from the override turn on); rank at hit `{1: 180, 2: 9, 3: 5, 4: 3, 5: 1, 6: 1, 9: 1}`. Boundary MRR is the known
 cost of the information gate: the "no preference" reply yields no constraint, the gate releases to a full shelf, and the
 hit lands at rank > 1 (`gated2` fixes it for +0.003 — inside noise, kept as a flag).
 
@@ -292,7 +297,8 @@ See README → *Limitations and What We'd Improve*. Items a judge should hear fr
 to the simulator's `intent_card()` channel (paraphrased 0.924 vs clean 0.958); the popularity prior is MostPop over a
 leave-last-out sample (§4.5); the one-item shelf is disclosed with its degenerate cousin (§6); previous-turn exclusion is
 kept below the Δ ≥ 0.02 rule as a UX behaviour; private intent cards may be pre-materialized by a different code path
-(`materialize_hidden_fields`), which the per-constraint token-subset fallback in the matcher is there to absorb. Measured
+(`materialize_hidden_fields`) — an exposure we disclose rather than mitigate: the matcher tests exact substring
+containment, so character-level drift in a constraint string is not absorbed. Measured
 generalisation (§5.1): 1,000 held-out targets sampled the organizers' way score **0.942**; 1,000 uniformly random catalog
 products score **0.873** — the gap is the popularity prior's dependence on how sessions are sampled, not on the 200 public
 sessions themselves (MRR is identical on the held-out set). The brief's long-term-profile idea is also measured rather
